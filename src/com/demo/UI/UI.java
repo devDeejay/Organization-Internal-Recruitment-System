@@ -20,8 +20,8 @@ public class UI {
         input = new Scanner(System.in);
 
         System.out.println("Welcome To Internal Recruitment System");
-        System.out.println("Please Press 1. To Login");
-        System.out.println("Please Press 0. To Exit");
+        System.out.println("Press 1. To Login");
+        System.out.println("Press 0. To Exit");
 
         Scanner input = new Scanner(System.in);
 
