@@ -8,4 +8,8 @@ public interface IRSValues {
 
     int ALLOCATED_IN_PROJECT = 201;
     int UNALLOCATED = 202;
+
+    int REQUISISTION_REQUEST_OPEN = 300;
+    int REQUISISTION_REQUEST_CLOSED = 301;
+
 }

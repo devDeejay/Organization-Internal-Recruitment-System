@@ -16,7 +16,7 @@ public class RequsitionRequest {
     String domainName;
     int numberOfPeopleRequired;
 
-    RequsitionRequest(){}
+    public RequsitionRequest(){}
 
     public RequsitionRequest(int resourceManagerID, int projectID, LocalDate dateCreated, LocalDate dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
         this.resourceManagerID = resourceManagerID;
@@ -33,6 +33,19 @@ public class RequsitionRequest {
     public RequsitionRequest(int requsitionID, int resourceManagerID, int projectID, LocalDate dateCreated, LocalDate dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
         this.requsitionID = requsitionID;
         this.resourceManagerID = resourceManagerID;
+        this.projectID = projectID;
+        this.dateCreated = dateCreated;
+        this.dateClosed = dateClosed;
+        this.requestStatus = requestStatus;
+        this.vacancy = vacancy;
+        this.skills = skills;
+        this.domainName = domainName;
+        this.numberOfPeopleRequired = numberOfPeopleRequired;
+    }
+
+    public RequsitionRequest(int managerID, int projectID, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
+        this.requsitionID = requsitionID;
+        this.resourceManagerID = managerID;
         this.projectID = projectID;
         this.dateCreated = dateCreated;
         this.dateClosed = dateClosed;

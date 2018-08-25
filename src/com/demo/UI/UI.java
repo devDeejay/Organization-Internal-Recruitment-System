@@ -1,11 +1,13 @@
 package com.demo.UI;
 
+import com.demo.Model.RequsitionRequest;
 import com.demo.Model.User;
 import com.demo.Service.AdminServiceInterfaceImplementation;
 import com.demo.Service.RMGExecutiveImplementation;
 import com.demo.Service.UserServiceInterfaceImplementation;
 import com.demo.Util.IRSValues;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,17 +15,19 @@ import java.util.Scanner;
 
 public class UI {
 
-    public static Scanner input;
+    private static Scanner input;
 
     public static void main(String[] args) {
 
         input = new Scanner(System.in);
 
+        startTheProgram();
+    }
+
+    private static void startTheProgram() {
         System.out.println("Welcome To Internal Recruitment System");
         System.out.println("Press 1. To Login");
         System.out.println("Press 0. To Exit");
-
-        Scanner input = new Scanner(System.in);
 
         int userInput = input.nextInt();
 
@@ -38,7 +42,8 @@ public class UI {
     }
 
     private static void loginUser() {
-        Scanner input = new Scanner(System.in);
+
+        input = new Scanner(System.in);
         System.out.print("Username : ");
         String username = input.next();
         System.out.print("Password : ");
@@ -80,11 +85,12 @@ public class UI {
         }
     }
 
-    private static void loginAsResourceManager(User loggedInUser) {
+    // =============================================================
+    // ======     When User Logged In As Resource Manager    =======
+    // =============================================================
 
-        // ==============================================================
-        // =======     When User Logged In As Resource Manager    =======
-        // ==============================================================
+
+    private static void loginAsResourceManager(User loggedInUser) {
 
         greetUser(loggedInUser);
 
@@ -96,6 +102,108 @@ public class UI {
          * TODO : Manually Update The Project Name, Code.
          * TODO : Generate Reports For Pending As Well As Closed Requests of his projects.
          */
+
+        System.out.println("Press 1 To Raise New Requisition Request");
+        System.out.println("Press 2 To View All Suggestion Made By RMG Executive");
+        System.out.println("Press 3 To Accept / Reject Requests");
+        System.out.println("Press 4 To Update Project Allocation For Employee");
+        System.out.println("Press 5 To Update Project Details");
+        System.out.println("Press 6 To See Reports");
+        System.out.println("Press -1 To Go Back");
+
+        RMGExecutiveImplementation rmgExecutiveService = new RMGExecutiveImplementation();
+
+        input = new Scanner(System.in);
+        int rmgInput = input.nextInt();
+
+        switch (rmgInput) {
+            case 1:
+                raiseNewRequisitionRequest();
+                break;
+
+            case 2:
+                viewExecutivesSuggestions();
+                break;
+
+            case 3:
+                acceptRejectRequests();
+                break;
+
+            case 4:
+                updateProjectAllocationForEmployee();
+                break;
+
+            case 5:
+                updateProjectDetails();
+                break;
+
+            case 6:
+                startTheProgram();
+                break;
+
+            case -1:
+                startTheProgram();
+                break;
+
+                default:
+                    System.out.println("Enter Valid Input, Please Try Again");
+                    loginAsResourceManager(loggedInUser);
+                    break;
+
+        }
+    }
+
+    // ================================================
+    // =======     Resource Manager  Methods    =======
+    // ================================================
+
+    private static void raiseNewRequisitionRequest() {
+
+        System.out.println("Raising Requisition Request : ");
+
+        System.out.println("Enter Your Manager ID");
+        int managerID = input.nextInt();
+
+        System.out.println("Enter Your Project ID");
+        int projectID = input.nextInt();
+
+        LocalDate dateCreated = LocalDate.now();
+        int requestStatus = IRSValues.REQUISISTION_REQUEST_OPEN;
+
+        System.out.println("Enter Vacancy Of People In Numbers");
+        int vacancy = input.nextInt();
+
+        System.out.println("Enter The Skills Space Seperated");
+        String skillsString = input.nextLine();
+        String[] skillsArray = skillsString.split(" ");
+        ArrayList<String> skills = new ArrayList<>(Arrays.asList(skillsArray));
+
+        System.out.println("Enter Domain Name");
+        String domainName = input.next();
+
+        System.out.println("Enter Number Of People Required");
+        int numberOfPeopleRequired = input.nextInt();
+
+        RequsitionRequest newRequisitionRequest = new RequsitionRequest(managerID, projectID, requestStatus, vacancy, skills, domainName, numberOfPeopleRequired);
+
+
+
+    }
+
+    private static void viewExecutivesSuggestions() {
+
+    }
+
+    private static void acceptRejectRequests() {
+
+    }
+
+    private static void updateProjectAllocationForEmployee() {
+
+    }
+
+    private static void updateProjectDetails() {
+
     }
 
     // ==============================================================
@@ -103,16 +211,13 @@ public class UI {
     // ==============================================================
 
     private static void loginAsRMGExecutive(User loggedInUser) {
-
-
-
         greetUser(loggedInUser);
 
         System.out.println("Please Press 1 To Search Employee");
         System.out.println("Please Press 2 To Assign RMG Project To Employee");
         System.out.println("Please Press 3 To View All Requisition Requests");
         System.out.println("Please Press 4 To Generate Reports");
-        System.out.println("Please Press 0 To Exit Program");
+        System.out.println("Please Press -1 To Go Back");
 
         RMGExecutiveImplementation rmgExecutiveService = new RMGExecutiveImplementation();
 
@@ -135,6 +240,9 @@ public class UI {
             case 4:
                 //  TODO : Generate Reports For Closed / Pending Requests from all Resource Managers for specific Date / Time / Closed / Pending.
                 generateReports(rmgExecutiveService);
+                break;
+            case -1:
+                startTheProgram();
                 break;
 
             default:
@@ -183,8 +291,6 @@ public class UI {
             default:
                 exitProgram();
         }
-
-
     }
 
     //Assign Project To Employee
@@ -196,7 +302,6 @@ public class UI {
         int employeeID = input.nextInt();
 
         //TODO : Allocate the project
-
     }
 
     //View All Requests
@@ -215,11 +320,10 @@ public class UI {
 
     private static void loginAsAdmin(User loggedInUser) {
 
-
-
         greetUser(loggedInUser);
 
         System.out.println("Welcome " + loggedInUser.getName());
+
         /*
          * TODO : Add Users and their Roles.
          * TODO : Modify Users and their Roles.
@@ -329,13 +433,11 @@ public class UI {
 
 
     private static void exitProgram() {
-        System.out.println("Thankyou, Have A Great Day!");
+        System.out.println("Thank You, Have A Great Day!");
         System.exit(0);
     }
 
     private static void greetUser(User loggedInUser) {
         System.out.println("Welcome " + loggedInUser.getName());
     }
-
-
 }
