@@ -19,7 +19,15 @@ public class User {
         this.password = password;
     }
 
-    public User(String name, String username, String password, int userGrade) {
+    public User(int userID, String name, String username, String password, int userGrade) {
+        this.userID = userID;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.userGrade = userGrade;
+    }
+
+    public User(String name, String username, String password, int userRole) {
         this.name = name;
         this.username = username;
         this.password = password;

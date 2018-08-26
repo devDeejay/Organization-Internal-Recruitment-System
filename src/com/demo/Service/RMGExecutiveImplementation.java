@@ -33,27 +33,27 @@ public class RMGExecutiveImplementation implements RMGExecutiveInterface {
     }
 
     @Override
-    public ArrayList<RequsitionRequest> viewAllRequsitionRequests() {
+    public ArrayList<RequsitionRequest> viewAllRequisitionRequests(int rmgExecutiveID) {
         return null;
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllClosedRequest() {
+    public ArrayList<RequsitionRequest> getAllClosedRequest(int rmgExecutiveID) {
         return null;
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllPendingRequest() {
+    public ArrayList<RequsitionRequest> getAllPendingRequest(int rmgExecutiveID) {
         return null;
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllClosedRequestAfterDate(LocalDate date) {
+    public ArrayList<RequsitionRequest> getAllClosedRequestAfterDate(int rmgExecutiveID, LocalDate date) {
         return null;
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllPendingRequestAfterDate(LocalDate date) {
+    public ArrayList<RequsitionRequest> getAllPendingRequestAfterDate(int rmgExecutiveID, LocalDate date) {
         return null;
     }
 }

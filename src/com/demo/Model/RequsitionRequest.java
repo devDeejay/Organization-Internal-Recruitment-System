@@ -1,5 +1,6 @@
 package com.demo.Model;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -8,8 +9,8 @@ public class RequsitionRequest {
     int requsitionID;
     int resourceManagerID;
     int projectID;
-    LocalDate dateCreated;
-    LocalDate dateClosed;
+    Date dateCreated;
+    Date dateClosed;
     int requestStatus;
     int vacancy;
     ArrayList<String> skills;
@@ -18,7 +19,7 @@ public class RequsitionRequest {
 
     public RequsitionRequest(){}
 
-    public RequsitionRequest(int resourceManagerID, int projectID, LocalDate dateCreated, LocalDate dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
+    public RequsitionRequest(int resourceManagerID, int projectID, Date dateCreated, Date dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
         this.resourceManagerID = resourceManagerID;
         this.projectID = projectID;
         this.dateCreated = dateCreated;
@@ -30,7 +31,7 @@ public class RequsitionRequest {
         this.numberOfPeopleRequired = numberOfPeopleRequired;
     }
 
-    public RequsitionRequest(int requsitionID, int resourceManagerID, int projectID, LocalDate dateCreated, LocalDate dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
+    public RequsitionRequest(int requsitionID, int resourceManagerID, int projectID, Date dateCreated, Date dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
         this.requsitionID = requsitionID;
         this.resourceManagerID = resourceManagerID;
         this.projectID = projectID;
@@ -80,19 +81,19 @@ public class RequsitionRequest {
         this.projectID = projectID;
     }
 
-    public LocalDate getDateCreated() {
+    public Date getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(LocalDate dateCreated) {
+    public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public LocalDate getDateClosed() {
+    public Date getDateClosed() {
         return dateClosed;
     }
 
-    public void setDateClosed(LocalDate dateClosed) {
+    public void setDateClosed(Date dateClosed) {
         this.dateClosed = dateClosed;
     }
 

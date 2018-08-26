@@ -30,22 +30,22 @@ public interface RMGExecutiveInterface {
 
     //  TODO : View All Requisition Requests.
 
-    ArrayList<RequsitionRequest> viewAllRequsitionRequests(int rmgExecutiveID);
+    ArrayList<RequsitionRequest> viewAllRequisitionRequests(int rmgExecutiveID);
 
     //  TODO : Generate Reports For Closed
 
-    ArrayList<RequsitionRequest> getAllClosedRequest();
+    ArrayList<RequsitionRequest> getAllClosedRequest(int rmgExecutiveID);
 
     //  TODO : Generate Reports For Pending Requests
 
-    ArrayList<RequsitionRequest> getAllPendingRequest();
+    ArrayList<RequsitionRequest> getAllPendingRequest(int rmgExecutiveID);
 
     //  TODO : Generate Reports For Closed Requests After This Date
 
-    ArrayList<RequsitionRequest> getAllClosedRequestAfterDate(LocalDate date);
+    ArrayList<RequsitionRequest> getAllClosedRequestAfterDate(int rmgExecutiveID, LocalDate date);
 
     //  TODO : Generate Reports For Pending Requests After This Date
 
-    ArrayList<RequsitionRequest> getAllPendingRequestAfterDate(LocalDate date);
+    ArrayList<RequsitionRequest> getAllPendingRequestAfterDate(int rmgExecutiveID, LocalDate date);
 
 }

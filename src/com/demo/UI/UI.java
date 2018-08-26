@@ -9,6 +9,7 @@ import com.demo.Service.ResouceManagerImplementation;
 import com.demo.Service.UserServiceInterfaceImplementation;
 import com.demo.Util.IRSValues;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,9 +28,10 @@ public class UI {
     }
 
     private static void startTheProgram() {
+        printSpaces();
         System.out.println("Welcome To Internal Recruitment System");
         System.out.println("Press 1. To Login");
-        System.out.println("Press 0. To Exit");
+        System.out.println("Press 2. To Exit");
 
         int userInput = input.nextInt();
 
@@ -41,10 +43,11 @@ public class UI {
                 System.out.println("Have a great day!");
                 System.exit(0);
         }
+        startTheProgram();
     }
 
     private static void loginUser() {
-
+        printSpaces();
         input = new Scanner(System.in);
         System.out.print("Username : ");
         String username = input.next();
@@ -70,14 +73,17 @@ public class UI {
         int userGrade = loggedInUser.getUserGrade();
         switch (userGrade) {
             case IRSValues.ADMIN:
+                System.out.println("Logging In As Admin");
                 loginAsAdmin(loggedInUser);
                 break;
 
             case IRSValues.RMG_EXECUTIVE:
+                System.out.println("Logging In As Executive");
                 loginAsRMGExecutive(loggedInUser);
                 break;
 
             case IRSValues.RESOURCE_MANAGER:
+                System.out.println("Loggin In As Manager");
                 loginAsResourceManager(loggedInUser);
                 break;
 
@@ -87,21 +93,184 @@ public class UI {
         }
     }
 
-    // =============================================================
-    // ======     When User Logged In As Resource Manager    =======
-    // =============================================================
+    // ======================================================
+    // =======           Login User Methods           =======
+    // ======================================================
 
+    private static User checkUserCredentials(User newUser) {
+        UserServiceInterfaceImplementation userService = new UserServiceInterfaceImplementation();
+        User loggedInUser = userService.loginUser(newUser);
+        return loggedInUser;
+    }
 
-    private static void loginAsResourceManager(User loggedInUser) {
+    // =========================================================
+    // =======                                           =======
+    // =======     1. When User Logged In As Admin       =======
+    // =======                                           =======
+    // =========================================================
 
+    private static void loginAsAdmin(User loggedInUser) {
+        printSpaces();
         greetUser(loggedInUser);
-        int managerID = loggedInUser.getUserID();
-        showMenuForResourceManager(loggedInUser, managerID);
-        loginAsResourceManager(loggedInUser);
+
+        /*
+         * TODO : Add Users and their Roles.
+         * TODO : Modify Users and their Roles.
+         * TODO : Delete Users.
+         */
+
+        System.out.println("Please Press 1 To Add User");
+        System.out.println("Please Press 2 To View Users");
+        System.out.println("Please Press 3 To Modify User");
+        System.out.println("Please Press 4 To Delete User");
+        System.out.println("Please Press -1 To Log Out");
+
+        AdminServiceInterfaceImplementation adminService = new AdminServiceInterfaceImplementation();
+
+        int adminInput = input.nextInt();
+
+        switch (adminInput) {
+            case 1:
+                addUser(adminService);
+                break;
+            case 2:
+                viewUsers(adminService);
+                break;
+            case 3:
+                modifyUser(adminService);
+                break;
+            case 4:
+                deleteUserFromDatabase(adminService);
+                break;
+            case -1:
+                return;
+
+            default:
+                System.out.println("Please enter a valid input.");
+        }
+
+        loginAsAdmin(loggedInUser);
 
     }
 
-    private static void showMenuForResourceManager(User loggedInUser, int managerID) {
+    // =========================================================
+    // =======           Admin Functionality             =======
+    // =========================================================
+
+    //  1.1 - Adding User
+    private static void addUser(AdminServiceInterfaceImplementation adminService) {
+        printSpaces();
+        System.out.println("Adding Users To Database");
+        System.out.println("Enter Name");
+        String name = input.next();
+        System.out.println("Enter Username");
+        String username = input.nextLine();
+        System.out.println("Enter Password");
+        String password = input.next();
+        System.out.println(
+                "Enter User Role Code : \n" +
+                        "101 For RESOURCE_MANAGER \n" +
+                        "102 For RMG_EXECUTIVE\n" +
+                        "103 For Admin\n"
+        );
+
+        int userRole = input.nextInt();
+
+        //Creating User Object To Be Passed Further
+        User userToBeAdded = new User(name, username, password, userRole);
+
+        //Calling The Method and Getting Its Return Status
+        boolean status = adminService.addUser(userToBeAdded);
+
+        //Printing Out Relevant Message
+        if (status) {
+            System.out.println("User Added Successfully");
+        } else {
+            System.out.println("Failed To Add User");
+        }
+    }
+
+    //  1.2 - Viewing Users
+    private static void viewUsers(AdminServiceInterfaceImplementation adminService) {
+
+        printSpaces();
+        System.out.println("Viewing Users In Database");
+        ArrayList<User> users = adminService.viewUsers();
+
+        for (User user : users) {
+            System.out.println(
+                    "Name : " + user.getName() +
+                            " Grade : " + user.getUserGrade() +
+                            "User ID " + user.getUserID());
+        }
+    }
+
+    //  1.3 - Modify User
+    private static void modifyUser(AdminServiceInterfaceImplementation adminService) {
+        printSpaces();
+        System.out.println("Modifying A User, Start With Entering the user ID");
+
+        int userID = input.nextInt();
+
+        System.out.println("Enter The New Name");
+        String name = input.next();
+        System.out.println("Enter The New UserName");
+        String username = input.nextLine();
+        System.out.println("Enter The New Password");
+        String password = input.next();
+        System.out.println(
+                "Enter New User Role Code : \n" +
+                        "101 For RESOURCE_MANAGER \n" +
+                        "102 For RMG_EXECUTIVE\n" +
+                        "103 For Admin\n"
+        );
+
+        int userRole = input.nextInt();
+
+        User userToBeAdded = new User(userID, name, username, password, userRole);
+        boolean status = adminService.addUser(userToBeAdded);
+
+        //Printing Out Relevant Message
+        if (status) {
+            System.out.println("User Modified Successfully");
+        } else {
+            System.out.println("Failed To Modify User, No Changes Were Saved");
+        }
+
+    }
+
+    //  1.4 - Delete User
+    private static void deleteUserFromDatabase(AdminServiceInterfaceImplementation adminService) {
+
+        printSpaces();
+        System.out.println("Delete An Existing User");
+        System.out.println("Enter User ID Of User To Be Deleted");
+
+        int userID = input.nextInt();
+
+        User userToBeDeleted = new User(userID);
+        boolean status = adminService.deleteUser(userToBeDeleted);
+
+        //Printing Out Relevant Message
+        if (status) {
+            System.out.println("User Deleted Successfully");
+        } else {
+            System.out.println("Failed To Delete User, Maybe the User doesn't exists?");
+        }
+    }
+
+    // ===================================================================
+    // ======                                                      =======
+    // ======     2. When User is Logged In As Resource Manager    =======
+    // ======                                                      =======
+    // ===================================================================
+
+    private static void loginAsResourceManager(User loggedInUser) {
+
+        printSpaces();
+        greetUser(loggedInUser);
+        int managerID = loggedInUser.getUserID();
+
         /*
          * TODO : Raise Requisition Requests For Concerned People.
          * TODO : View All The Suggestions Made By RMGExecutiveDAOInterface.
@@ -117,7 +286,7 @@ public class UI {
         System.out.println("Press 4 To Update Project Allocation For Employee");
         System.out.println("Press 5 To Update Project Details");
         System.out.println("Press 6 To See Reports");
-        System.out.println("Press -1 To Go Back");
+        System.out.println("Press -1 To Go Logout");
 
         ResouceManagerImplementation resourceManagerService = new ResouceManagerImplementation();
 
@@ -153,26 +322,32 @@ public class UI {
                 startTheProgram();
                 break;
 
-                default:
-                    System.out.println("Enter Valid Input, Please Try Again");
-                    loginAsResourceManager(loggedInUser);
-                    break;
-
+            default:
+                System.out.println("Enter Valid Input, Please Try Again");
+                loginAsResourceManager(loggedInUser);
+                break;
         }
+
+        //Re-run This Menu
+        loginAsResourceManager(loggedInUser);
+
     }
 
-    // ================================================
-    // =======     Resource Manager  Methods    =======
-    // ================================================
+    // ====================================================================
+    // =======            Resource Manager Functionality             ======
+    // ====================================================================
 
+
+    // 2.1 - Raise New Requisition Request
     private static void raiseNewRequisitionRequest(ResouceManagerImplementation resourceManagerService, int managerID) {
 
-        System.out.println("Raising Requisition Request : ");
+        printSpaces();
+        System.out.println("Raising Requisition Request");
 
         System.out.println("Enter Your Project ID");
         int projectID = input.nextInt();
 
-        LocalDate dateCreated = LocalDate.now();
+        Date dateCreated = new java.sql.Date(System.currentTimeMillis());
         int requestStatus = IRSValues.REQUISISTION_REQUEST_OPEN;
 
         System.out.println("Enter Vacancy Of People In Numbers");
@@ -194,9 +369,12 @@ public class UI {
 
         if (requisitionRequestID != 0) {
             System.out.println("Requisition Request Raised With ID " + requisitionRequestID);
+        } else {
+            System.out.println("Failed To Raise Requistion Request ");
         }
     }
 
+    // 2.2 - View Suggestion Made By Executives
     private static void viewExecutivesSuggestions(ResouceManagerImplementation resourceManagerService, int managerID) {
         System.out.println("Viewing RMG Executive Suggestions");
 
@@ -214,26 +392,32 @@ public class UI {
         }
     }
 
+    // 2.3 - Accept / Reject Suggestions Made By Executives
     private static void acceptRejectRequests(ResouceManagerImplementation resourceManagerService, int managerID) {
+
+        printSpaces();
+        System.out.println("Accept / Reject Suggestions, You have the following suggestions");
         viewExecutivesSuggestions(resourceManagerService, managerID);
 
         System.out.println("Enter The Requisition Suggestion ID You Want To Accept / Reject ");
-        int requsitionIDToAcceptReject = input.nextInt();
+        int requisitionIDToAcceptReject = input.nextInt();
 
         System.out.println("Please Enter 1 to Accept 2 to Reject The Request");
         int acceptRejectCode = input.nextInt();
 
-        if(resourceManagerService.acceptRejectSuggestions(managerID, requsitionIDToAcceptReject, acceptRejectCode)){
+        if (resourceManagerService.acceptRejectSuggestions(managerID, requisitionIDToAcceptReject, acceptRejectCode)) {
             if (acceptRejectCode == 1) {
                 System.out.println("Suggestion Accepted");
-            }
-            else if (acceptRejectCode == 2) {
+            } else if (acceptRejectCode == 2) {
                 System.out.println("Suggestion Declined");
             }
         }
     }
 
+    // 2.4 - Update Project Allocation For Employee
     private static void updateProjectAllocationForEmployee(ResouceManagerImplementation resourceManagerService, int managerID) {
+
+        printSpaces();
         System.out.println("Updating Project Allocation For Employee");
         System.out.println("Enter EmployeeID");
         int empID = input.nextInt();
@@ -241,31 +425,43 @@ public class UI {
         System.out.println("Enter Project ID");
         int projectID = input.nextInt();
 
-        if(resourceManagerService.updateProjectForEmployee(managerID, empID, projectID)){
+        if (resourceManagerService.updateProjectForEmployee(managerID, empID, projectID)) {
             System.out.println("Details Updated Successfully");
+        }
+        else{
+            System.out.println("Failed To Update Any Deatails");
         }
     }
 
+    // 2.5 - Update Project Details
     private static void updateProjectDetails(ResouceManagerImplementation resourceManagerService, int managerID) {
+
+        printSpaces();
         System.out.println("Updating Project Details");
 
         System.out.println("Enter Project ID");
 
-        if(resourceManagerService.updateProjectDetails(managerID, input.nextInt())){
+        if (resourceManagerService.updateProjectDetails(managerID, input.nextInt())) {
             System.out.println("Details Updated Successfully");
         }
     }
 
+    // 2.6 - Generate Reports For Resource Manager
     private static void generateReportsForResourceManager(ResouceManagerImplementation resourceManagerService, int managerID) {
+        printSpaces();
+        System.out.println("Generating Reports");
         System.out.println(resourceManagerService.generateReportForAllRequests(managerID));
     }
 
-    // ==============================================================
-    // =======     When User Logged In As RMG Executive       =======
-    // ==============================================================
+    // ================================================================
+    // ======                                                   =======
+    // ======     3. When User is Logged In As RMG Executive    =======
+    // ======                                                   =======
+    // ================================================================
 
     private static void loginAsRMGExecutive(User loggedInUser) {
 
+        printSpaces();
         greetUser(loggedInUser);
 
         int RMGExecutiveID = loggedInUser.getUserID();
@@ -309,34 +505,39 @@ public class UI {
         loginAsRMGExecutive(loggedInUser);
     }
 
-    // =====================================
-    // =======     RMG Methods       =======
-    // =====================================
+    // ================================================================
+    // =======               RMG Executive Methods             ========
+    // ================================================================
 
-    //Search Employee
-    private static void searchEmployee(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
+    //  3.1 - Search Employee
+    private static void searchEmployee(RMGExecutiveImplementation rmgExecutiveService, int rmgExecutiveID) {
 
+        printSpaces();
         System.out.println("Press 1 To Search By ID");
         System.out.println("Press 2 To Search By Domain");
         System.out.println("Press 3 To Search By Experience");
         System.out.println("Press 4 To Search By Skills");
-        System.out.println("Press -1 To Go Back To Previous Section");
+        System.out.println("Press -1 To Go Back To Previous Menu");
 
-        int adminInput = input.nextInt();
+        int rmgExecutiveInput = input.nextInt();
 
-        switch (adminInput) {
+        switch (rmgExecutiveInput) {
+
             case 1:
                 int ID = input.nextInt();
                 rmgExecutiveService.searchEmployeByID(ID);
                 break;
+
             case 2:
                 String domain = input.next();
                 rmgExecutiveService.searchEmployeeByDomain(domain);
                 break;
+
             case 3:
                 int yearsOfExperience = input.nextInt();
                 rmgExecutiveService.searchEmployeeByExperience(yearsOfExperience);
                 break;
+
             case 4:
                 String skills = input.nextLine();
                 String[] skillsArray = skills.split(" ");
@@ -349,12 +550,15 @@ public class UI {
                 return;
 
             default:
-                exitProgram();
+                searchEmployee(rmgExecutiveService, rmgExecutiveID);
+
         }
     }
 
-    //Assign Project To Employee
+    //  3.2 - Assign Project To Employee
     private static void assignProjectToRM(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
+
+        printSpaces();
         System.out.println("Enter The Project ID");
         int projectID = input.nextInt();
 
@@ -366,136 +570,80 @@ public class UI {
         rmgExecutiveService.assignProjectToEmployee(projectID, employeeID);
     }
 
-    //View All Requests
+    //  3.2 - View All Requests
     private static void viewAllRequisitionRequests(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
-        rmgExecutiveService.viewAllRequsitionRequests(RMGExecutiveID);
+
+        printSpaces();
+        ArrayList<RequsitionRequest> listOfRequests = rmgExecutiveService.viewAllRequisitionRequests(RMGExecutiveID);
+
+        System.out.println("{");
+        for (RequsitionRequest request : listOfRequests) {
+            System.out.println(
+                    "Raised By : " + request.getResourceManagerID() +
+                            "Date Created : " + request.getDateCreated() + "\n" +
+                            "Date Closed : " + request.getDateClosed() + "\n" +
+                            "Domain : " + request.getDomainName() + "\n" +
+                            "Request Status : " + request.getRequestStatus() + "\n" +
+                            "Vacancy : " + request.getVacancy() + "\n" +
+                            "Skills Required : " + request.getSkills() + "\n" +   // TODO : Need to Format Skills
+                            "People Required : " + request.getNumberOfPeopleRequired() + "\n");
+        }
+        System.out.println("}");
     }
 
-    //Generate Reports
-    private static void generateReports(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
+    //  3.4 - Generate Reports
+    private static void generateReports(RMGExecutiveImplementation rmgExecutiveService, int rmgExecutiveID) {
 
-    }
-
-    // ======================================================
-    // =======     When User Logged In As Admin       =======
-    // ======================================================
-
-    private static void loginAsAdmin(User loggedInUser) {
-
-        greetUser(loggedInUser);
-
-        System.out.println("Welcome " + loggedInUser.getName());
-
-        /*
-         * TODO : Add Users and their Roles.
-         * TODO : Modify Users and their Roles.
-         * TODO : Delete Users.
-         */
-
-        System.out.println("Please Press 1 To Add User");
-        System.out.println("Please Press 2 To View Users");
-        System.out.println("Please Press 3 To Modify User");
-        System.out.println("Please Press 4 To Delete User");
-        System.out.println("Please Press 0 To Exit Program");
-
-        AdminServiceInterfaceImplementation adminService = new AdminServiceInterfaceImplementation();
+        printSpaces();
+        System.out.println("Press 1 To Get All Closed Requests");
+        System.out.println("Press 2 To Get All Closed Request By Some Date");
+        System.out.println("Press 3 To Get All Open Request");
+        System.out.println("Press 4 To Get All Open Request By Some Date");
+        System.out.println("Press -1 To Go Back To Previous Section");
 
         int adminInput = input.nextInt();
 
         switch (adminInput) {
             case 1:
-                addUserToDatabase(adminService);
+                rmgExecutiveService.getAllClosedRequest(rmgExecutiveID);
                 break;
             case 2:
-                viewUsersInDatabase(adminService);
+                System.out.println("Enter Date In Format YYYY-MM-DD");
+                LocalDate date = LocalDate.parse(input.nextLine());
+                Date dateCreated = new java.sql.Date(date.toEpochDay());
+                rmgExecutiveService.getAllClosedRequestAfterDate(rmgExecutiveID, date);
                 break;
             case 3:
-                modifyUserInDatabase(adminService);
+                rmgExecutiveService.getAllPendingRequest(rmgExecutiveID);
                 break;
             case 4:
-                deleteUserFromDatabase(adminService);
+                System.out.println("Enter Date In Format YYYY-MM-DD");
+                date = LocalDate.parse(input.nextLine());
+                rmgExecutiveService.getAllPendingRequestAfterDate(rmgExecutiveID, date);
                 break;
-
+            case -1:
+                return;
             default:
-                exitProgram();
+                System.out.println("Invalid Input, Try Again");
+                break;
         }
     }
 
     // =======================================
-    // =======     Admin Methods       =======
+    // =======                         =======
+    // =======    Other Methods        =======
+    // =======                         =======
     // =======================================
-
-    private static boolean addUserToDatabase(AdminServiceInterfaceImplementation adminService) {
-
-        String name = input.next();
-        String username = input.nextLine();
-        String password = input.next();
-        int userRole = input.nextInt();
-
-        User userToBeAdded = new User(name, username, password, userRole);
-        boolean status = adminService.addUser(userToBeAdded);
-
-        return status;
-
-    }
-
-    private static boolean viewUsersInDatabase(AdminServiceInterfaceImplementation adminService) {
-        ArrayList<User> users = adminService.viewUsers();
-
-        for (User user : users) {
-            System.out.println(
-                    "Name : " + user.getName() +
-                            " Grade : " + user.getUserGrade() +
-                            "User ID " + user.getUserID());
-        }
-
-        return true;
-
-    }
-
-    private static boolean modifyUserInDatabase(AdminServiceInterfaceImplementation adminService) {
-        String name = input.next();
-        String username = input.nextLine();
-        String password = input.next();
-        int userRole = input.nextInt();
-
-        User userToBeAdded = new User(name, username, password, userRole);
-        boolean status = adminService.addUser(userToBeAdded);
-
-        return status;
-    }
-
-    private static boolean deleteUserFromDatabase(AdminServiceInterfaceImplementation adminService) {
-
-        System.out.println("Enter User ID Of User To Be Deleted");
-
-        int userID = input.nextInt();
-
-        User userToBeDeleted = new User(userID);
-        boolean status = adminService.deleteUser(userToBeDeleted);
-
-        return status;
-    }
-
-    // ============================================
-    // =======     Login User Methods       =======
-    // ============================================
-
-
-    private static User checkUserCredentials(User newUser) {
-        UserServiceInterfaceImplementation userService = new UserServiceInterfaceImplementation();
-        User loggedInUser = userService.loginUser(newUser);
-        return loggedInUser;
-    }
-
-    // ========================================
-    // =======     Common Methods       =======
-    // ========================================
-
 
     private static void exitProgram() {
         System.out.println("Thank You, Have A Great Day!");
         System.exit(0);
+    }
+
+    private static void printSpaces() {
+        for (int i = 0; i < 10; i++) {
+            System.out.println();
+        }
     }
 
     private static void greetUser(User loggedInUser) {
