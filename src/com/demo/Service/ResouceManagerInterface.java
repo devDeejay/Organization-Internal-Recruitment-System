@@ -1,5 +1,6 @@
 package com.demo.Service;
 
+import com.demo.Model.RequisitionSuggestions;
 import com.demo.Model.RequsitionRequest;
 
 import java.util.ArrayList;
@@ -14,16 +15,16 @@ public interface ResouceManagerInterface {
      * TODO : Generate Reports For Pending As Well As Closed Requests of his projects.
      */
 
-    boolean raiseRequisitionRequest(RequsitionRequest request);
+    int raiseRequisitionRequest(RequsitionRequest request);
 
-    ArrayList<RequsitionRequest> viewSuggestionsMadeByExecutive(int managerID);
+    ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutive(int managerID);
 
-    boolean acceptRejectSuggestions(int managerID);
+    boolean acceptRejectSuggestions(int managerID, int requisitionIDToAcceptReject, int acceptRejectCode);
 
-    boolean updateProjectForEmployee(int projectID, int employeeID);
+    boolean updateProjectForEmployee(int managerID, int employeeID, int projectID);
 
-    boolean updateProjectDetails(int projectID);
+    boolean updateProjectDetails(int managerID, int projectID);
 
-    String generateReportForAllRequests();
+    String generateReportForAllRequests(int managerID);
 
 }

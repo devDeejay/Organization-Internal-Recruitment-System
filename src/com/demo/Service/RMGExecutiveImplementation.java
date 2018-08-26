@@ -28,7 +28,7 @@ public class RMGExecutiveImplementation implements RMGExecutiveInterface {
     }
 
     @Override
-    public boolean AssignProjectToEmployee(int empID, int projectID) {
+    public boolean assignProjectToEmployee(int empID, int projectID) {
         return false;
     }
 

@@ -1,9 +1,11 @@
 package com.demo.UI;
 
+import com.demo.Model.RequisitionSuggestions;
 import com.demo.Model.RequsitionRequest;
 import com.demo.Model.User;
 import com.demo.Service.AdminServiceInterfaceImplementation;
 import com.demo.Service.RMGExecutiveImplementation;
+import com.demo.Service.ResouceManagerImplementation;
 import com.demo.Service.UserServiceInterfaceImplementation;
 import com.demo.Util.IRSValues;
 
@@ -93,7 +95,13 @@ public class UI {
     private static void loginAsResourceManager(User loggedInUser) {
 
         greetUser(loggedInUser);
+        int managerID = loggedInUser.getUserID();
+        showMenuForResourceManager(loggedInUser, managerID);
+        loginAsResourceManager(loggedInUser);
 
+    }
+
+    private static void showMenuForResourceManager(User loggedInUser, int managerID) {
         /*
          * TODO : Raise Requisition Requests For Concerned People.
          * TODO : View All The Suggestions Made By RMGExecutiveDAOInterface.
@@ -111,34 +119,34 @@ public class UI {
         System.out.println("Press 6 To See Reports");
         System.out.println("Press -1 To Go Back");
 
-        RMGExecutiveImplementation rmgExecutiveService = new RMGExecutiveImplementation();
+        ResouceManagerImplementation resourceManagerService = new ResouceManagerImplementation();
 
         input = new Scanner(System.in);
         int rmgInput = input.nextInt();
 
         switch (rmgInput) {
             case 1:
-                raiseNewRequisitionRequest();
+                raiseNewRequisitionRequest(resourceManagerService, managerID);
                 break;
 
             case 2:
-                viewExecutivesSuggestions();
+                viewExecutivesSuggestions(resourceManagerService, managerID);
                 break;
 
             case 3:
-                acceptRejectRequests();
+                acceptRejectRequests(resourceManagerService, managerID);
                 break;
 
             case 4:
-                updateProjectAllocationForEmployee();
+                updateProjectAllocationForEmployee(resourceManagerService, managerID);
                 break;
 
             case 5:
-                updateProjectDetails();
+                updateProjectDetails(resourceManagerService, managerID);
                 break;
 
             case 6:
-                startTheProgram();
+                generateReportsForResourceManager(resourceManagerService, managerID);
                 break;
 
             case -1:
@@ -157,12 +165,9 @@ public class UI {
     // =======     Resource Manager  Methods    =======
     // ================================================
 
-    private static void raiseNewRequisitionRequest() {
+    private static void raiseNewRequisitionRequest(ResouceManagerImplementation resourceManagerService, int managerID) {
 
         System.out.println("Raising Requisition Request : ");
-
-        System.out.println("Enter Your Manager ID");
-        int managerID = input.nextInt();
 
         System.out.println("Enter Your Project ID");
         int projectID = input.nextInt();
@@ -185,25 +190,74 @@ public class UI {
         int numberOfPeopleRequired = input.nextInt();
 
         RequsitionRequest newRequisitionRequest = new RequsitionRequest(managerID, projectID, requestStatus, vacancy, skills, domainName, numberOfPeopleRequired);
+        int requisitionRequestID = resourceManagerService.raiseRequisitionRequest(newRequisitionRequest);
 
-
-
+        if (requisitionRequestID != 0) {
+            System.out.println("Requisition Request Raised With ID " + requisitionRequestID);
+        }
     }
 
-    private static void viewExecutivesSuggestions() {
+    private static void viewExecutivesSuggestions(ResouceManagerImplementation resourceManagerService, int managerID) {
+        System.out.println("Viewing RMG Executive Suggestions");
 
+        ArrayList<RequisitionSuggestions> requisitionSuggestions = resourceManagerService.viewSuggestionsMadeByExecutive(managerID);
+
+        for (RequisitionSuggestions suggestion : requisitionSuggestions) {
+            System.out.println("{ \n" +
+                    "Request ID : " + suggestion.getRequisitionSuggestionID() + "\n" +
+                    "Name : " + suggestion.getEmployeeName() + "\n" +
+                    "For Project ID : " + suggestion.getSuggestedProjectID() + "\n" +
+                    "Skills : " + suggestion.getSkills() + "\n" +
+                    "Domain : " + suggestion.getDomain() + "\n" +
+                    "Name : " + suggestion.getYearsOfExperience() + "\n" + "}"
+            );
+        }
     }
 
-    private static void acceptRejectRequests() {
+    private static void acceptRejectRequests(ResouceManagerImplementation resourceManagerService, int managerID) {
+        viewExecutivesSuggestions(resourceManagerService, managerID);
 
+        System.out.println("Enter The Requisition Suggestion ID You Want To Accept / Reject ");
+        int requsitionIDToAcceptReject = input.nextInt();
+
+        System.out.println("Please Enter 1 to Accept 2 to Reject The Request");
+        int acceptRejectCode = input.nextInt();
+
+        if(resourceManagerService.acceptRejectSuggestions(managerID, requsitionIDToAcceptReject, acceptRejectCode)){
+            if (acceptRejectCode == 1) {
+                System.out.println("Suggestion Accepted");
+            }
+            else if (acceptRejectCode == 2) {
+                System.out.println("Suggestion Declined");
+            }
+        }
     }
 
-    private static void updateProjectAllocationForEmployee() {
+    private static void updateProjectAllocationForEmployee(ResouceManagerImplementation resourceManagerService, int managerID) {
+        System.out.println("Updating Project Allocation For Employee");
+        System.out.println("Enter EmployeeID");
+        int empID = input.nextInt();
 
+        System.out.println("Enter Project ID");
+        int projectID = input.nextInt();
+
+        if(resourceManagerService.updateProjectForEmployee(managerID, empID, projectID)){
+            System.out.println("Details Updated Successfully");
+        }
     }
 
-    private static void updateProjectDetails() {
+    private static void updateProjectDetails(ResouceManagerImplementation resourceManagerService, int managerID) {
+        System.out.println("Updating Project Details");
 
+        System.out.println("Enter Project ID");
+
+        if(resourceManagerService.updateProjectDetails(managerID, input.nextInt())){
+            System.out.println("Details Updated Successfully");
+        }
+    }
+
+    private static void generateReportsForResourceManager(ResouceManagerImplementation resourceManagerService, int managerID) {
+        System.out.println(resourceManagerService.generateReportForAllRequests(managerID));
     }
 
     // ==============================================================
@@ -211,13 +265,16 @@ public class UI {
     // ==============================================================
 
     private static void loginAsRMGExecutive(User loggedInUser) {
+
         greetUser(loggedInUser);
+
+        int RMGExecutiveID = loggedInUser.getUserID();
 
         System.out.println("Please Press 1 To Search Employee");
         System.out.println("Please Press 2 To Assign RMG Project To Employee");
         System.out.println("Please Press 3 To View All Requisition Requests");
         System.out.println("Please Press 4 To Generate Reports");
-        System.out.println("Please Press -1 To Go Back");
+        System.out.println("Please Press -1 To Logout");
 
         RMGExecutiveImplementation rmgExecutiveService = new RMGExecutiveImplementation();
 
@@ -227,37 +284,37 @@ public class UI {
         switch (rmgInput) {
             case 1:
                 //  TODO : Search Employee On Domain / Skill / Experience / ID.
-                searchEmployee(rmgExecutiveService);
+                searchEmployee(rmgExecutiveService, RMGExecutiveID);
                 break;
             case 2:
                 //  TODO : Assign RMG Project To Employee.
-                assignProjectToRM(rmgExecutiveService);
+                assignProjectToRM(rmgExecutiveService, RMGExecutiveID);
                 break;
             case 3:
                 //  TODO : View All Requisition Requests.
-                viewAllRequisitionRequests(rmgExecutiveService);
+                viewAllRequisitionRequests(rmgExecutiveService, RMGExecutiveID);
                 break;
             case 4:
                 //  TODO : Generate Reports For Closed / Pending Requests from all Resource Managers for specific Date / Time / Closed / Pending.
-                generateReports(rmgExecutiveService);
+                generateReports(rmgExecutiveService, RMGExecutiveID);
                 break;
             case -1:
                 startTheProgram();
                 break;
 
             default:
-                exitProgram();
+                System.out.println("Incorrect Input, Try Again");
+                loginAsRMGExecutive(loggedInUser);
         }
-
+        loginAsRMGExecutive(loggedInUser);
     }
 
     // =====================================
     // =======     RMG Methods       =======
     // =====================================
 
-
     //Search Employee
-    private static void searchEmployee(RMGExecutiveImplementation rmgExecutiveService) {
+    private static void searchEmployee(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
 
         System.out.println("Press 1 To Search By ID");
         System.out.println("Press 2 To Search By Domain");
@@ -288,13 +345,16 @@ public class UI {
                 rmgExecutiveService.searchEmployeeBySkills(skillsArrayList);
                 break;
 
+            case -1:
+                return;
+
             default:
                 exitProgram();
         }
     }
 
     //Assign Project To Employee
-    private static void assignProjectToRM(RMGExecutiveImplementation rmgExecutiveService) {
+    private static void assignProjectToRM(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
         System.out.println("Enter The Project ID");
         int projectID = input.nextInt();
 
@@ -302,15 +362,17 @@ public class UI {
         int employeeID = input.nextInt();
 
         //TODO : Allocate the project
+
+        rmgExecutiveService.assignProjectToEmployee(projectID, employeeID);
     }
 
     //View All Requests
-    private static void viewAllRequisitionRequests(RMGExecutiveImplementation rmgExecutiveService) {
-
+    private static void viewAllRequisitionRequests(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
+        rmgExecutiveService.viewAllRequsitionRequests(RMGExecutiveID);
     }
 
     //Generate Reports
-    private static void generateReports(RMGExecutiveImplementation rmgExecutiveService) {
+    private static void generateReports(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
 
     }
 
@@ -414,7 +476,6 @@ public class UI {
 
         return status;
     }
-
 
     // ============================================
     // =======     Login User Methods       =======

@@ -26,11 +26,11 @@ public interface RMGExecutiveInterface {
 
     //  TODO : Assign RMG Project To Employee.
 
-    boolean AssignProjectToEmployee(int empID, int projectID);
+    boolean assignProjectToEmployee(int empID, int projectID);
 
     //  TODO : View All Requisition Requests.
 
-    ArrayList<RequsitionRequest> viewAllRequsitionRequests();
+    ArrayList<RequsitionRequest> viewAllRequsitionRequests(int rmgExecutiveID);
 
     //  TODO : Generate Reports For Closed
 
