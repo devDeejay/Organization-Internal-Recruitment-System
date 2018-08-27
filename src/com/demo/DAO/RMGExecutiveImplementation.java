@@ -1,7 +1,7 @@
 package com.demo.DAO;
 
 import com.demo.Model.Employee;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,9 +43,9 @@ public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface{
     }
 
     @Override
-    public ArrayList<RequsitionRequest> viewAllRequsitionRequestsFromDatabase() {
+    public ArrayList<RequisitionRequest> viewAllRequsitionRequestsFromDatabase() {
 
-        ArrayList<RequsitionRequest> allRequisitionRequests = new ArrayList<>();
+        ArrayList<RequisitionRequest> allRequisitionRequests = new ArrayList<>();
 
         //TODO Iterate Result Set And Create Arraylist and Return it
 
@@ -53,8 +53,8 @@ public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface{
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllClosedRequestFromDatabase() {
-        ArrayList<RequsitionRequest> allClosedRequisitionRequests = new ArrayList<>();
+    public ArrayList<RequisitionRequest> getAllClosedRequestFromDatabase() {
+        ArrayList<RequisitionRequest> allClosedRequisitionRequests = new ArrayList<>();
 
         //TODO Iterate Result Set And Create Arraylist and Return it
 
@@ -62,8 +62,8 @@ public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface{
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllPendingRequestFromDatabase() {
-        ArrayList<RequsitionRequest> allPendingRequisitionRequests = new ArrayList<>();
+    public ArrayList<RequisitionRequest> getAllPendingRequestFromDatabase() {
+        ArrayList<RequisitionRequest> allPendingRequisitionRequests = new ArrayList<>();
 
         //TODO Iterate Result Set And Create Arraylist and Return it
 
@@ -71,8 +71,8 @@ public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface{
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllClosedRequestAfterDateFromDatabase(LocalDate date) {
-        ArrayList<RequsitionRequest> allClosedRequests = new ArrayList<>();
+    public ArrayList<RequisitionRequest> getAllClosedRequestAfterDateFromDatabase(LocalDate date) {
+        ArrayList<RequisitionRequest> allClosedRequests = new ArrayList<>();
 
         //TODO Iterate Result Set And Create Arraylist and Return it
 
@@ -80,15 +80,15 @@ public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface{
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllPendingRequestAfterDateFromDatabase(LocalDate date) {
-        ArrayList<RequsitionRequest> allPendingRequests = new ArrayList<>();
+    public ArrayList<RequisitionRequest> getAllPendingRequestAfterDateFromDatabase(LocalDate date) {
+        ArrayList<RequisitionRequest> allPendingRequests = new ArrayList<>();
 
         //TODO Iterate Result Set And Create Arraylist and Return it
 
         return allPendingRequests;
     }
 
-    //Method To Convert Skills Arraylist to String For Storing in Database
+    //Method To Convert Skills Array list to String For Storing in Database
 
     private String convertSkillsToString(ArrayList<String> skills) {
         StringBuilder skillsAsStrings = new StringBuilder();

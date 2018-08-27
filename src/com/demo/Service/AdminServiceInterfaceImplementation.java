@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class AdminServiceInterfaceImplementation implements AdminServiceInterface {
 
-    AdminDAOInterfaceImplementation adminDAOImplementation = new AdminDAOInterfaceImplementation();
+    private AdminDAOInterfaceImplementation adminDAOImplementation = new AdminDAOInterfaceImplementation();
 
     @Override
     public boolean addUser(User userToBeAdded) {

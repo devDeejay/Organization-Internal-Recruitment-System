@@ -1,13 +1,13 @@
 package com.demo.DAO;
 
 import com.demo.Model.RequisitionSuggestions;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 
 import java.util.ArrayList;
 
 public class ResourceManagerDAOImplementation implements ResourceManagerDAOInterface {
     @Override
-    public int raiseRequisitionRequestInDatabase(RequsitionRequest request) {
+    public int raiseRequisitionRequestInDatabase(RequisitionRequest request) {
         return 0;
     }
 

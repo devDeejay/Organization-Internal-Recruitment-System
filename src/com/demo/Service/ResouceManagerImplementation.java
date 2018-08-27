@@ -1,13 +1,13 @@
 package com.demo.Service;
 
 import com.demo.Model.RequisitionSuggestions;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 
 import java.util.ArrayList;
 
 public class ResouceManagerImplementation implements ResouceManagerInterface {
     @Override
-    public int raiseRequisitionRequest(RequsitionRequest request) {
+    public int raiseRequisitionRequest(RequisitionRequest request) {
         return 0;
     }
 

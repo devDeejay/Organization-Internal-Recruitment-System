@@ -1,7 +1,7 @@
 package com.demo.Service;
 
 import com.demo.Model.Employee;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,22 +30,22 @@ public interface RMGExecutiveInterface {
 
     //  TODO : View All Requisition Requests.
 
-    ArrayList<RequsitionRequest> viewAllRequisitionRequests(int rmgExecutiveID);
+    ArrayList<RequisitionRequest> viewAllRequisitionRequests(int rmgExecutiveID);
 
     //  TODO : Generate Reports For Closed
 
-    ArrayList<RequsitionRequest> getAllClosedRequest(int rmgExecutiveID);
+    ArrayList<RequisitionRequest> getAllClosedRequest(int rmgExecutiveID);
 
     //  TODO : Generate Reports For Pending Requests
 
-    ArrayList<RequsitionRequest> getAllPendingRequest(int rmgExecutiveID);
+    ArrayList<RequisitionRequest> getAllPendingRequest(int rmgExecutiveID);
 
     //  TODO : Generate Reports For Closed Requests After This Date
 
-    ArrayList<RequsitionRequest> getAllClosedRequestAfterDate(int rmgExecutiveID, LocalDate date);
+    ArrayList<RequisitionRequest> getAllClosedRequestAfterDate(int rmgExecutiveID, LocalDate date);
 
     //  TODO : Generate Reports For Pending Requests After This Date
 
-    ArrayList<RequsitionRequest> getAllPendingRequestAfterDate(int rmgExecutiveID, LocalDate date);
+    ArrayList<RequisitionRequest> getAllPendingRequestAfterDate(int rmgExecutiveID, LocalDate date);
 
 }

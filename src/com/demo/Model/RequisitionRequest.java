@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class RequsitionRequest {
+public class RequisitionRequest {
 
     int requsitionID;
     int resourceManagerID;
@@ -17,9 +17,9 @@ public class RequsitionRequest {
     String domainName;
     int numberOfPeopleRequired;
 
-    public RequsitionRequest(){}
+    public RequisitionRequest(){}
 
-    public RequsitionRequest(int resourceManagerID, int projectID, Date dateCreated, Date dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
+    public RequisitionRequest(int resourceManagerID, int projectID, Date dateCreated, Date dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
         this.resourceManagerID = resourceManagerID;
         this.projectID = projectID;
         this.dateCreated = dateCreated;
@@ -31,7 +31,7 @@ public class RequsitionRequest {
         this.numberOfPeopleRequired = numberOfPeopleRequired;
     }
 
-    public RequsitionRequest(int requsitionID, int resourceManagerID, int projectID, Date dateCreated, Date dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
+    public RequisitionRequest(int requsitionID, int resourceManagerID, int projectID, Date dateCreated, Date dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
         this.requsitionID = requsitionID;
         this.resourceManagerID = resourceManagerID;
         this.projectID = projectID;
@@ -44,7 +44,7 @@ public class RequsitionRequest {
         this.numberOfPeopleRequired = numberOfPeopleRequired;
     }
 
-    public RequsitionRequest(int managerID, int projectID, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
+    public RequisitionRequest(int managerID, int projectID, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
         this.requsitionID = requsitionID;
         this.resourceManagerID = managerID;
         this.projectID = projectID;

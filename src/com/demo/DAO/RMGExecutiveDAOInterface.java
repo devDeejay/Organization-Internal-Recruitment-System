@@ -1,7 +1,7 @@
 package com.demo.DAO;
 
 import com.demo.Model.Employee;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,21 +29,21 @@ public interface RMGExecutiveDAOInterface {
 
     //  TODO : View All Requisition Requests.
 
-    ArrayList<RequsitionRequest> viewAllRequsitionRequestsFromDatabase();
+    ArrayList<RequisitionRequest> viewAllRequsitionRequestsFromDatabase();
 
     //  TODO : Generate Reports For Closed
 
-    ArrayList<RequsitionRequest> getAllClosedRequestFromDatabase();
+    ArrayList<RequisitionRequest> getAllClosedRequestFromDatabase();
 
     //  TODO : Generate Reports For Pending Requests
 
-    ArrayList<RequsitionRequest> getAllPendingRequestFromDatabase();
+    ArrayList<RequisitionRequest> getAllPendingRequestFromDatabase();
 
     //  TODO : Generate Reports For Closed Requests After This Date
 
-    ArrayList<RequsitionRequest> getAllClosedRequestAfterDateFromDatabase(LocalDate date);
+    ArrayList<RequisitionRequest> getAllClosedRequestAfterDateFromDatabase(LocalDate date);
 
     //  TODO : Generate Reports For Pending Requests After This Date
 
-    ArrayList<RequsitionRequest> getAllPendingRequestAfterDateFromDatabase(LocalDate date);
+    ArrayList<RequisitionRequest> getAllPendingRequestAfterDateFromDatabase(LocalDate date);
 }

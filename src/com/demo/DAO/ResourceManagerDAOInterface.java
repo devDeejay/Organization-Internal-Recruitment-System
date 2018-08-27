@@ -1,7 +1,7 @@
 package com.demo.DAO;
 
 import com.demo.Model.RequisitionSuggestions;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ public interface ResourceManagerDAOInterface {
      * TODO : Generate Reports For Pending As Well As Closed Requests of his projects.
      */
 
-    int raiseRequisitionRequestInDatabase(RequsitionRequest request);
+    int raiseRequisitionRequestInDatabase(RequisitionRequest request);
 
     ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutiveFromDatabase(int managerID);
 

@@ -1,7 +1,7 @@
 package com.demo.Service;
 
 import com.demo.Model.RequisitionSuggestions;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ public interface ResouceManagerInterface {
      * TODO : Generate Reports For Pending As Well As Closed Requests of his projects.
      */
 
-    int raiseRequisitionRequest(RequsitionRequest request);
+    int raiseRequisitionRequest(RequisitionRequest request);
 
     ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutive(int managerID);
 

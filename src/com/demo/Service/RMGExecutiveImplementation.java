@@ -1,7 +1,7 @@
 package com.demo.Service;
 
 import com.demo.Model.Employee;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,27 +33,27 @@ public class RMGExecutiveImplementation implements RMGExecutiveInterface {
     }
 
     @Override
-    public ArrayList<RequsitionRequest> viewAllRequisitionRequests(int rmgExecutiveID) {
+    public ArrayList<RequisitionRequest> viewAllRequisitionRequests(int rmgExecutiveID) {
         return null;
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllClosedRequest(int rmgExecutiveID) {
+    public ArrayList<RequisitionRequest> getAllClosedRequest(int rmgExecutiveID) {
         return null;
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllPendingRequest(int rmgExecutiveID) {
+    public ArrayList<RequisitionRequest> getAllPendingRequest(int rmgExecutiveID) {
         return null;
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllClosedRequestAfterDate(int rmgExecutiveID, LocalDate date) {
+    public ArrayList<RequisitionRequest> getAllClosedRequestAfterDate(int rmgExecutiveID, LocalDate date) {
         return null;
     }
 
     @Override
-    public ArrayList<RequsitionRequest> getAllPendingRequestAfterDate(int rmgExecutiveID, LocalDate date) {
+    public ArrayList<RequisitionRequest> getAllPendingRequestAfterDate(int rmgExecutiveID, LocalDate date) {
         return null;
     }
 }

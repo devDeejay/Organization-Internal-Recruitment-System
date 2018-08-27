@@ -1,7 +1,7 @@
 package com.demo.UI;
 
 import com.demo.Model.RequisitionSuggestions;
-import com.demo.Model.RequsitionRequest;
+import com.demo.Model.RequisitionRequest;
 import com.demo.Model.User;
 import com.demo.Service.AdminServiceInterfaceImplementation;
 import com.demo.Service.RMGExecutiveImplementation;
@@ -364,7 +364,7 @@ public class UI {
         System.out.println("Enter Number Of People Required");
         int numberOfPeopleRequired = input.nextInt();
 
-        RequsitionRequest newRequisitionRequest = new RequsitionRequest(managerID, projectID, requestStatus, vacancy, skills, domainName, numberOfPeopleRequired);
+        RequisitionRequest newRequisitionRequest = new RequisitionRequest(managerID, projectID, requestStatus, vacancy, skills, domainName, numberOfPeopleRequired);
         int requisitionRequestID = resourceManagerService.raiseRequisitionRequest(newRequisitionRequest);
 
         if (requisitionRequestID != 0) {
@@ -385,8 +385,8 @@ public class UI {
                     "Request ID : " + suggestion.getRequisitionSuggestionID() + "\n" +
                     "Name : " + suggestion.getEmployeeName() + "\n" +
                     "For Project ID : " + suggestion.getSuggestedProjectID() + "\n" +
-                    "Skills : " + suggestion.getSkills() + "\n" +
-                    "Domain : " + suggestion.getDomain() + "\n" +
+                    "Skills : " + suggestion.getEmployeeSkills() + "\n" +
+                    "Domain : " + suggestion.getEmployeeDomain() + "\n" +
                     "Name : " + suggestion.getYearsOfExperience() + "\n" + "}"
             );
         }
@@ -574,10 +574,10 @@ public class UI {
     private static void viewAllRequisitionRequests(RMGExecutiveImplementation rmgExecutiveService, int rmgExecutiveID) {
 
         printSpaces();
-        ArrayList<RequsitionRequest> listOfRequests = rmgExecutiveService.viewAllRequisitionRequests(rmgExecutiveID);
+        ArrayList<RequisitionRequest> listOfRequests = rmgExecutiveService.viewAllRequisitionRequests(rmgExecutiveID);
 
         System.out.println("{");
-        for (RequsitionRequest request : listOfRequests) {
+        for (RequisitionRequest request : listOfRequests) {
             System.out.println(
                     "Raised By : " + request.getResourceManagerID() +
                             "Date Created : " + request.getDateCreated() + "\n" +

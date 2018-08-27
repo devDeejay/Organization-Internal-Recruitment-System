@@ -1,11 +1,11 @@
 package com.demo.Model;
 
 public class User {
+    int userID;
+    int userGrade;
     String username;
     String password;
     String name;
-    int userGrade;
-    int userID;
     boolean isValidUser;
 
     public User(){}

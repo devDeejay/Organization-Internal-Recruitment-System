@@ -2,25 +2,18 @@ package com.demo.Model;
 
 import java.util.ArrayList;
 
-public class RequisitionSuggestions {
+public class RequisitionSuggestions extends Employee{
 
-    int requisitionSuggestionID;
-    int empID;
-    int suggestedProjectID;
-    String employeeName;
-    String domain;
-    ArrayList<String> skills;
-    int yearsOfExperience;
+    private int requisitionSuggestionID;
+    private int suggestedEmployeeID;
+    private int suggestedProjectID;
+    private int suggestionStatus;
 
     public RequisitionSuggestions(){}
 
-    public RequisitionSuggestions(int empID, int suggestedProjectID, String employeeName, String domain, ArrayList<String> skills, int yearsOfExperience) {
-        this.empID = empID;
+    public RequisitionSuggestions(int suggestedEmployeeID, int suggestedProjectID, String suggestedEmployeeName, String suggestedEmployeeDomain, ArrayList<String> skills, int suggestedEmployeeYearsOfExperience) {
+        this.suggestedEmployeeID = suggestedEmployeeID;
         this.suggestedProjectID = suggestedProjectID;
-        this.employeeName = employeeName;
-        this.domain = domain;
-        this.skills = skills;
-        this.yearsOfExperience = yearsOfExperience;
     }
 
     public int getRequisitionSuggestionID() {
@@ -31,12 +24,12 @@ public class RequisitionSuggestions {
         this.requisitionSuggestionID = requisitionSuggestionID;
     }
 
-    public int getEmpID() {
-        return empID;
+    public int getSuggestedEmployeeID() {
+        return suggestedEmployeeID;
     }
 
-    public void setEmpID(int empID) {
-        this.empID = empID;
+    public void setSuggestedEmployeeID(int suggestedEmployeeID) {
+        this.suggestedEmployeeID = suggestedEmployeeID;
     }
 
     public int getSuggestedProjectID() {
@@ -45,37 +38,5 @@ public class RequisitionSuggestions {
 
     public void setSuggestedProjectID(int suggestedProjectID) {
         this.suggestedProjectID = suggestedProjectID;
-    }
-
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
-
-    public ArrayList<String> getSkills() {
-        return skills;
-    }
-
-    public void setSkills(ArrayList<String> skills) {
-        this.skills = skills;
-    }
-
-    public int getYearsOfExperience() {
-        return yearsOfExperience;
-    }
-
-    public void setYearsOfExperience(int yearsOfExperience) {
-        this.yearsOfExperience = yearsOfExperience;
     }
 }
