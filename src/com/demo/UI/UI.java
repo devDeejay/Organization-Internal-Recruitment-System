@@ -260,9 +260,9 @@ public class UI {
     }
 
     // ===================================================================
-    // ======                                                      =======
-    // ======     2. When User is Logged In As Resource Manager    =======
-    // ======                                                      =======
+    // =======                                                      ======
+    // =======    2. When User is Logged In As Resource Manager     ======
+    // =======                                                      ======
     // ===================================================================
 
     private static void loginAsResourceManager(User loggedInUser) {
@@ -334,7 +334,7 @@ public class UI {
     }
 
     // ====================================================================
-    // =======            Resource Manager Functionality             ======
+    // =======            Resource Manager Functionality            =======
     // ====================================================================
 
 
@@ -506,7 +506,7 @@ public class UI {
     }
 
     // ================================================================
-    // =======               RMG Executive Methods             ========
+    // ======                RMG Executive Methods              =======
     // ================================================================
 
     //  3.1 - Search Employee
@@ -556,13 +556,13 @@ public class UI {
     }
 
     //  3.2 - Assign Project To Employee
-    private static void assignProjectToRM(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
+    private static void assignProjectToRM(RMGExecutiveImplementation rmgExecutiveService, int rmgExecutiveID) {
 
         printSpaces();
         System.out.println("Enter The Project ID");
         int projectID = input.nextInt();
 
-        System.out.println("Enter The Employee ID Seperated By Space");
+        System.out.println("Enter The Employee ID");
         int employeeID = input.nextInt();
 
         //TODO : Allocate the project
@@ -571,10 +571,10 @@ public class UI {
     }
 
     //  3.2 - View All Requests
-    private static void viewAllRequisitionRequests(RMGExecutiveImplementation rmgExecutiveService, int RMGExecutiveID) {
+    private static void viewAllRequisitionRequests(RMGExecutiveImplementation rmgExecutiveService, int rmgExecutiveID) {
 
         printSpaces();
-        ArrayList<RequsitionRequest> listOfRequests = rmgExecutiveService.viewAllRequisitionRequests(RMGExecutiveID);
+        ArrayList<RequsitionRequest> listOfRequests = rmgExecutiveService.viewAllRequisitionRequests(rmgExecutiveID);
 
         System.out.println("{");
         for (RequsitionRequest request : listOfRequests) {
