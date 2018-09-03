@@ -1,4 +1,4 @@
-package com.demo.Service;
+package com.demo.Service.Interface;
 
 import com.demo.Model.RequisitionSuggestions;
 import com.demo.Model.RequisitionRequest;
@@ -17,7 +17,9 @@ public interface ResouceManagerInterface {
 
     int raiseRequisitionRequest(RequisitionRequest request);
 
-    ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutive(int managerID);
+    ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutive(int managerID, int suggestionCode);
+
+    ArrayList<RequisitionRequest> viewAllRequests(int managerID, int choice);
 
     boolean acceptRejectSuggestions(int managerID, int requisitionIDToAcceptReject, int acceptRejectCode);
 

@@ -1,84 +1,99 @@
 package com.demo.Model;
 
 public class User {
-    int userID;
-    int userGrade;
-    String username;
-    String password;
-    String name;
-    boolean isValidUser;
+	int userID;
+	int userGrade;
+	String username;
+	String password;
+	String name;
+	boolean isValidUser;
 
-    public User(){}
+	private User(Builder builder) {
+		this.userID = builder.userID;
+		this.userGrade = builder.userGrade;
+		this.username = builder.username;
+		this.password = builder.password;
+		this.name = builder.name;
+		this.isValidUser = builder.isValidUser;
+	}
 
-    public User(int userID) {
-        this.userID = userID;
-    }
+	public User() {
+	}
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public User(int userID, String name, String username, String password, int userGrade) {
-        this.userID = userID;
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.userGrade = userGrade;
-    }
+	public int getUserID() {
+		return userID;
+	}
 
-    public User(String name, String username, String password, int userRole) {
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.userGrade = userGrade;
-    }
+	public boolean isValidUser() {
+		return isValidUser;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public int getUserID() {
-        return userID;
-    }
+	public int getUserGrade() {
+		return userGrade;
+	}
 
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
+	public static class Builder {
+		int userID;
+		int userGrade;
+		String username;
+		String password;
+		String name;
+		boolean isValidUser;
 
-    public boolean isValidUser() {
-        return isValidUser;
-    }
+		public Builder() {
 
-    public void setValidUser(boolean validUser) {
-        isValidUser = validUser;
-    }
+		}
 
-    public String getUsername() {
-        return username;
-    }
+		public User build() {
+			return new User(this);
+		}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+		public Builder userID(int userId) {
+			this.userID = userId;
+			return this;
+		}
 
-    public String getPassword() {
-        return password;
-    }
+		public Builder isValidUser(boolean isValidUser) {
+			this.isValidUser = isValidUser;
+			return this;
+		}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+		public Builder userGrade(int userGrade) {
+			this.userGrade = userGrade;
+			return this;
+		}
 
-    public int getUserGrade() {
-        return userGrade;
-    }
+		public Builder username(String username) {
+			this.username = username;
+			return this;
+		}
 
-    public void setUserGrade(int userGrade) {
-        this.userGrade = userGrade;
-    }
+		public Builder password(String password) {
+			this.password = password;
+			return this;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder name(boolean isValidUser) {
+			this.isValidUser = isValidUser;
+			return this;
+		}
+	} // End Of Builder Class
+
 }

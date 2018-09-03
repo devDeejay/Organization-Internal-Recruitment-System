@@ -1,42 +1,86 @@
 package com.demo.Model;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
-public class RequisitionSuggestions extends Employee{
+import com.demo.Model.RequisitionRequest.Builder;
 
-    private int requisitionSuggestionID;
-    private int suggestedEmployeeID;
-    private int suggestedProjectID;
-    private int suggestionStatus;
+public class RequisitionSuggestions extends Employee {
 
-    public RequisitionSuggestions(){}
+	private int requisitionSuggestionID;
+	private int requisitionRequestID;
+	private int suggestedEmployeeID;
+	private int suggestedProjectID;
+	private int suggestionStatus;
 
-    public RequisitionSuggestions(int suggestedEmployeeID, int suggestedProjectID, String suggestedEmployeeName, String suggestedEmployeeDomain, ArrayList<String> skills, int suggestedEmployeeYearsOfExperience) {
-        this.suggestedEmployeeID = suggestedEmployeeID;
-        this.suggestedProjectID = suggestedProjectID;
-    }
+	public int getRequisitionSuggestionID() {
+		return requisitionSuggestionID;
+	}
 
-    public int getRequisitionSuggestionID() {
-        return requisitionSuggestionID;
-    }
+	public int getRequisitionRequestID() {
+		return requisitionRequestID;
+	}
 
-    public void setRequisitionSuggestionID(int requisitionSuggestionID) {
-        this.requisitionSuggestionID = requisitionSuggestionID;
-    }
+	public int getSuggestedEmployeeID() {
+		return suggestedEmployeeID;
+	}
 
-    public int getSuggestedEmployeeID() {
-        return suggestedEmployeeID;
-    }
+	public int getSuggestedProjectID() {
+		return suggestedProjectID;
+	}
 
-    public void setSuggestedEmployeeID(int suggestedEmployeeID) {
-        this.suggestedEmployeeID = suggestedEmployeeID;
-    }
+	public int getSuggestionStatus() {
+		return suggestionStatus;
+	}
 
-    public int getSuggestedProjectID() {
-        return suggestedProjectID;
-    }
+	public static class Builder {
 
-    public void setSuggestedProjectID(int suggestedProjectID) {
-        this.suggestedProjectID = suggestedProjectID;
-    }
+		private int requisitionSuggestionID;
+		private int suggestedEmployeeID;
+		private int suggestedProjectID;
+		private int suggestionStatus;
+		private int requisitionRequestID;
+		
+		public Builder() {
+
+		}
+
+		public RequisitionSuggestions build() {
+			return new RequisitionSuggestions(this);
+		}
+
+		public Builder requisitionRequestID(int requisitionRequestID) {
+			this.requisitionRequestID = requisitionRequestID;
+			return this;
+		}
+
+		public Builder suggestedEmployeeID(int suggestedEmployeeID) {
+			this.suggestedEmployeeID = suggestedEmployeeID;
+			return this;
+		}
+
+		public Builder suggestedProjectID(int suggestedProjectID) {
+			this.suggestedProjectID = suggestedProjectID;
+			return this;
+		}
+
+		public Builder requisitionSuggestionID(int requisitionSuggestionID) {
+			this.requisitionSuggestionID = requisitionSuggestionID;
+			return this;
+		}
+
+		public Builder suggestionStatus(int suggestionStatus) {
+			this.suggestionStatus = suggestionStatus;
+			return this;
+		}
+
+	} // End Of Builder Class
+
+	private RequisitionSuggestions(Builder builder) {
+		this.requisitionSuggestionID = builder.requisitionSuggestionID;
+		this.suggestedEmployeeID = builder.suggestedEmployeeID;
+		this.suggestedProjectID = builder.suggestedProjectID;
+		this.suggestionStatus = builder.suggestionStatus;
+		this.requisitionRequestID = builder.requisitionRequestID;
+	}
 }

@@ -1,13 +1,14 @@
-package com.demo.Service;
+package com.demo.Service.Implementation;
 
-import com.demo.DAO.AdminDAOInterfaceImplementation;
+import com.demo.DAO.Implementation.AdminDAOImplementation;
 import com.demo.Model.User;
+import com.demo.Service.Interface.AdminServiceInterface;
 
 import java.util.ArrayList;
 
 public class AdminServiceInterfaceImplementation implements AdminServiceInterface {
 
-    private AdminDAOInterfaceImplementation adminDAOImplementation = new AdminDAOInterfaceImplementation();
+    private AdminDAOImplementation adminDAOImplementation = new AdminDAOImplementation();
 
     @Override
     public boolean addUser(User userToBeAdded) {

@@ -4,136 +4,177 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import oracle.net.aso.e;
+
 public class RequisitionRequest {
 
-    int requsitionID;
-    int resourceManagerID;
-    int projectID;
-    Date dateCreated;
-    Date dateClosed;
-    int requestStatus;
-    int vacancy;
-    ArrayList<String> skills;
-    String domainName;
-    int numberOfPeopleRequired;
+	/*
+	 * , skills_required VARCHAR2(4000), domain VARCHAR2(50),
+	 */
 
-    public RequisitionRequest(){}
+	int requsitionID;
+	int resourceManagerID;
+	int executiveID;
+	int projectID;
+	int requestStatus;
+	int vacancy;
+	int numberOfPeopleRequired;
+	String skillsAsString;
+	String domainName;
+	ArrayList<String> skills;
+	Date dateCreated;
+	Date dateClosed;
 
-    public RequisitionRequest(int resourceManagerID, int projectID, Date dateCreated, Date dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
-        this.resourceManagerID = resourceManagerID;
-        this.projectID = projectID;
-        this.dateCreated = dateCreated;
-        this.dateClosed = dateClosed;
-        this.requestStatus = requestStatus;
-        this.vacancy = vacancy;
-        this.skills = skills;
-        this.domainName = domainName;
-        this.numberOfPeopleRequired = numberOfPeopleRequired;
-    }
+	public int getRequsitionID() {
+		return requsitionID;
+	}
+	
+	public int getExecutiveID(){
+		return executiveID;
+	}
 
-    public RequisitionRequest(int requsitionID, int resourceManagerID, int projectID, Date dateCreated, Date dateClosed, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
-        this.requsitionID = requsitionID;
-        this.resourceManagerID = resourceManagerID;
-        this.projectID = projectID;
-        this.dateCreated = dateCreated;
-        this.dateClosed = dateClosed;
-        this.requestStatus = requestStatus;
-        this.vacancy = vacancy;
-        this.skills = skills;
-        this.domainName = domainName;
-        this.numberOfPeopleRequired = numberOfPeopleRequired;
-    }
+	public int getResourceManagerID() {
+		return resourceManagerID;
+	}
 
-    public RequisitionRequest(int managerID, int projectID, int requestStatus, int vacancy, ArrayList<String> skills, String domainName, int numberOfPeopleRequired) {
-        this.requsitionID = requsitionID;
-        this.resourceManagerID = managerID;
-        this.projectID = projectID;
-        this.dateCreated = dateCreated;
-        this.dateClosed = dateClosed;
-        this.requestStatus = requestStatus;
-        this.vacancy = vacancy;
-        this.skills = skills;
-        this.domainName = domainName;
-        this.numberOfPeopleRequired = numberOfPeopleRequired;
-    }
+	public int getProjectID() {
+		return projectID;
+	}
 
-    public int getRequsitionID() {
-        return requsitionID;
-    }
+	public Date getDateCreated() {
+		return dateCreated;
+	}
 
-    public void setRequsitionID(int requsitionID) {
-        this.requsitionID = requsitionID;
-    }
+	public Date getDateClosed() {
+		return dateClosed;
+	}
 
-    public int getResourceManagerID() {
-        return resourceManagerID;
-    }
+	public String getRequestStatus() {
+		
+		if (requestStatus == 300) {
+			return "OPEN";
+		}
+		
+		else {
+			return "CLOSED";
+		}
+	}
 
-    public void setResourceManagerID(int resourceManagerID) {
-        this.resourceManagerID = resourceManagerID;
-    }
+	public int getVacancy() {
+		return vacancy;
+	}
 
-    public int getProjectID() {
-        return projectID;
-    }
+	public ArrayList<String> getSkills() {
+		return skills;
+	}
 
-    public void setProjectID(int projectID) {
-        this.projectID = projectID;
-    }
+	public String getSkillsAsString() {
+		return skillsAsString;
+	}
 
-    public Date getDateCreated() {
-        return dateCreated;
-    }
+	public String getDomainName() {
+		return domainName;
+	}
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
+	public int getNumberOfPeopleRequired() {
+		return numberOfPeopleRequired;
+	}
 
-    public Date getDateClosed() {
-        return dateClosed;
-    }
+	// Creating Builder Pattern Static Class
 
-    public void setDateClosed(Date dateClosed) {
-        this.dateClosed = dateClosed;
-    }
+	public static class Builder {
 
-    public int getRequestStatus() {
-        return requestStatus;
-    }
+		int requsitionID;
+		int executiveID;
+		int resourceManagerID;
+		int projectID;
+		int numberOfPeopleRequired;
+		int requestStatus;
+		int vacancy;
+		ArrayList<String> skills;
+		String skillsAsString;
+		String domainName;
+		Date dateCreated;
+		Date dateClosed;
 
-    public void setRequestStatus(int requestStatus) {
-        this.requestStatus = requestStatus;
-    }
+		public Builder() {
 
-    public int getVacancy() {
-        return vacancy;
-    }
+		}
 
-    public void setVacancy(int vacancy) {
-        this.vacancy = vacancy;
-    }
+		public RequisitionRequest build() {
+			return new RequisitionRequest(this);
+		}
 
-    public ArrayList<String> getSkills() {
-        return skills;
-    }
+		public Builder requsitionID(int requsitionID) {
+			this.requsitionID = requsitionID;
+			return this;
+		}
+		
+		public Builder executiveID(int executiveID) {
+			this.executiveID = executiveID;
+			return this;
+		}
 
-    public void setSkills(ArrayList<String> skills) {
-        this.skills = skills;
-    }
+		public Builder resourceManagerID(int resourceManagerID) {
+			this.resourceManagerID = resourceManagerID;
+			return this;
+		}
 
-    public String getDomainName() {
-        return domainName;
-    }
+		public Builder projectID(int projectID) {
+			this.projectID = projectID;
+			return this;
+		}
 
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
-    }
+		public Builder numberOfPeopleRequired(int numberOfPeopleRequired) {
+			this.numberOfPeopleRequired = numberOfPeopleRequired;
+			return this;
+		}
 
-    public int getNumberOfPeopleRequired() {
-        return numberOfPeopleRequired;
-    }
+		public Builder requestStatus(int requestStatus) {
+			this.requestStatus = requestStatus;
+			return this;
+		}
 
-    public void setNumberOfPeopleRequired(int numberOfPeopleRequired) {
-        this.numberOfPeopleRequired = numberOfPeopleRequired;
-    }
+		public Builder vacancy(int vacancy) {
+			this.vacancy = vacancy;
+			return this;
+		}
+
+		public Builder skillsAsString(String skillsAsString) {
+			this.skillsAsString = skillsAsString;
+			return this;
+		}
+
+		public Builder domainName(String domainName) {
+			this.domainName = domainName;
+			return this;
+		}
+
+		public Builder dateCreated(Date dateCreated) {
+			this.dateCreated = dateCreated;
+			return this;
+		}
+
+		public Builder dateClosed(Date dateClosed) {
+			this.dateClosed = dateClosed;
+			return this;
+		}
+
+	} // End Of Builder Class
+
+	private RequisitionRequest(Builder builder) {
+		this.requsitionID = builder.requsitionID;
+		this.executiveID = builder.executiveID;
+		this.resourceManagerID = builder.resourceManagerID;
+		this.projectID = builder.projectID;
+		this.numberOfPeopleRequired = builder.numberOfPeopleRequired;
+		this.requestStatus = builder.requestStatus;
+		this.vacancy = builder.vacancy;
+		this.skills = builder.skills;
+		this.skillsAsString = builder.skillsAsString;
+		this.domainName = builder.domainName;
+		this.dateCreated = builder.dateCreated;
+		this.dateClosed = builder.dateClosed;
+	}
+
 }

@@ -1,4 +1,4 @@
-package com.demo.DAO;
+package com.demo.DAO.Interfaces;
 
 import com.demo.Model.Employee;
 import com.demo.Model.RequisitionRequest;

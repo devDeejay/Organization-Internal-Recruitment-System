@@ -1,7 +1,8 @@
-package com.demo.Service;
+package com.demo.Service.Implementation;
 
-import com.demo.DAO.UserDAOInterfaceImplementation;
+import com.demo.DAO.Implementation.UserDAOInterfaceImplementation;
 import com.demo.Model.User;
+import com.demo.Service.Interface.UserServiceInterface;
 
 public class UserServiceInterfaceImplementation implements UserServiceInterface {
 

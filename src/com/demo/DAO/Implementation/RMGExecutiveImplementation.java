@@ -1,24 +1,25 @@
-package com.demo.DAO;
+package com.demo.DAO.Implementation;
 
+import com.demo.DAO.Interfaces.RMGExecutiveDAOInterface;
 import com.demo.Model.Employee;
 import com.demo.Model.RequisitionRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface{
+public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface {
 
     @Override
     public Employee searchEmployeeByIDFromDatabase(int ID) {
         Employee employeeToBeSearched = new Employee();
-        //TODO: Get Values Accordingly From ID and Return the employee object
+        //TODO: Get Values Accordingly From ID and Return the Employee Object
         return employeeToBeSearched;
     }
 
     @Override
     public ArrayList<Employee> searchEmployeeByDomainFromDatabase(String domainName) {
         ArrayList<Employee> employees = new ArrayList<>();
-        //TODO: Get Employees Accordingly By Domain and Return the employee Arraylist
+        //TODO: Get Employees Accordingly By Domain and Return the employee Array List
         return employees;
     }
 
@@ -56,7 +57,7 @@ public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface{
     public ArrayList<RequisitionRequest> getAllClosedRequestFromDatabase() {
         ArrayList<RequisitionRequest> allClosedRequisitionRequests = new ArrayList<>();
 
-        //TODO Iterate Result Set And Create Arraylist and Return it
+        //TODO Iterate Result Set And Create Array List and Return it
 
         return allClosedRequisitionRequests;
     }
@@ -83,7 +84,7 @@ public class RMGExecutiveImplementation implements RMGExecutiveDAOInterface{
     public ArrayList<RequisitionRequest> getAllPendingRequestAfterDateFromDatabase(LocalDate date) {
         ArrayList<RequisitionRequest> allPendingRequests = new ArrayList<>();
 
-        //TODO Iterate Result Set And Create Arraylist and Return it
+        //TODO Iterate Result Set And Create Array List and Return it
 
         return allPendingRequests;
     }

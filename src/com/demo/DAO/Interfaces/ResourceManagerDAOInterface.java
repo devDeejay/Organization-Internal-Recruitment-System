@@ -1,4 +1,4 @@
-package com.demo.DAO;
+package com.demo.DAO.Interfaces;
 
 import com.demo.Model.RequisitionSuggestions;
 import com.demo.Model.RequisitionRequest;
@@ -18,7 +18,9 @@ public interface ResourceManagerDAOInterface {
 
     int raiseRequisitionRequestInDatabase(RequisitionRequest request);
 
-    ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutiveFromDatabase(int managerID);
+    ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutiveFromDatabase(int managerID, int suggestionCode);
+
+    ArrayList<RequisitionRequest> viewAllRequestsMade(int managerID, int choice);
 
     boolean acceptRejectSuggestionsInDatabase(int managerID, int requisitionIDToAcceptReject, int acceptRejectCode);
 
