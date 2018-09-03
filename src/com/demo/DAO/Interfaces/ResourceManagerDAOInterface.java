@@ -1,7 +1,7 @@
 package com.demo.DAO.Interfaces;
 
-import com.demo.Model.RequisitionSuggestions;
 import com.demo.Model.RequisitionRequest;
+import com.demo.Model.RequisitionSuggestions;
 
 import java.util.ArrayList;
 
@@ -27,6 +27,4 @@ public interface ResourceManagerDAOInterface {
     boolean updateProjectForEmployeeInDatabase(int managerID, int employeeID, int projectID);
 
     boolean updateProjectDetailsInDatabase(int managerID, int projectID);
-
-    String generateReportForAllRequestsFromDatabase(int managerID);
 }

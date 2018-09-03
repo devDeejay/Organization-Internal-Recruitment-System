@@ -157,8 +157,7 @@ public class ResourceManagerDAOImplementation implements
             if (resultSet.next()) {
                 // Get The Executive ID
                 executiveID = resultSet.getInt(1);
-            }
-            else {
+            } else {
                 // Else, Send null Back To Avoid Crash Ahead
                 return null;
             }
@@ -241,6 +240,7 @@ public class ResourceManagerDAOImplementation implements
             // Getting Requests Made By Logged In Manager
             preparedStatement.setInt(1, managerID);
 
+            // Executing Query
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -276,19 +276,45 @@ public class ResourceManagerDAOImplementation implements
         //  Accept Reject Suggestions
 
         DBUtil dbUtilInstance = DBUtil.getInstance();
-        try (
-                // Try With Resources
-                Connection connection = dbUtilInstance.getConnection();
-                PreparedStatement statement = connection.prepareStatement(IClientQueryMapper.ACCEPT_REJECT_SUGGESTIONS);
-        ) {
+        try {
+            Connection connection = dbUtilInstance.getConnection();
+            PreparedStatement statement = connection.prepareStatement(IClientQueryMapper.ACCEPT_REJECT_SUGGESTIONS);
 
             statement.setInt(1, acceptRejectCode);
             statement.setInt(2, suggestionID);
 
             int status = statement.executeUpdate();
 
+            // If Update Was Successful
             if (status == 1) {
-                return true;
+                int requisition_ID = 0;
+
+                // Get RequisitionID For This Query
+                statement = connection.prepareStatement(IClientQueryMapper.GET_REQUISITION_REQUEST_ID_FROM_SUGGESTION_ID);
+                statement.setInt(1, suggestionID);
+
+                // Getting Requisition ID
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    requisition_ID = resultSet.getInt(1);
+                } else
+                    return false;
+
+                // Using The Requisition ID To Proceed With Update
+                if (requisition_ID != 0) {
+                    // Updating That Requisition ID
+                    statement = connection.prepareStatement(IClientQueryMapper.UPDATE_REQUISITION_REQUEST_STATUS);
+                    statement.setInt(1, acceptRejectCode);
+                    statement.setInt(2, requisition_ID);
+
+                    int rowsAffected = statement.executeUpdate();
+                    if (rowsAffected == 1) {
+                        //Everything Done Successfully
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else return false;
             } else {
                 return false;
             }
@@ -333,11 +359,6 @@ public class ResourceManagerDAOImplementation implements
 
     @Override
     public boolean updateProjectDetailsInDatabase(int managerID, int projectID) {
-        return false;
-    }
-
-    @Override
-    public String generateReportForAllRequestsFromDatabase(int managerID) {
-        return null;
+        return true;
     }
 }

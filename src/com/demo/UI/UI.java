@@ -533,27 +533,10 @@ public class UI {
 
         System.out.println("ALL REQUESTS");
         showRequests(resourceManagerService, managerID, IRSValues.ALL_REQUESTS);
-
-
-        // ================================================================
-        // =      			List Of All Suggestions              		  =
-        // ================================================================
-
-
-        // ================================================================
-        // =      		   List Of Accepted Suggestions              	  =
-        // ================================================================
-
-
-        // ================================================================
-        // =      		   List Of Rejected Suggestions              	  =
-        // ================================================================
-
     }
 
     private static void showRequests(ResouceManagerImplementation resourceManagerService, int managerID, int requestCode) {
         ArrayList<RequisitionRequest> listOfAllRequests = resourceManagerService.viewAllRequests(managerID, requestCode);
-
         Iterator<RequisitionRequest> iterator = listOfAllRequests.iterator();
         while (iterator.hasNext()) {
             RequisitionRequest request = iterator.next();
@@ -753,12 +736,6 @@ public class UI {
     // =         Other Methods         =
     // =                               =
     // =================================
-
-    //	Exit Program Method
-    private static void exitProgram() {
-        System.out.println("Thank You, Have A Great Day!");
-        System.exit(0);
-    }
 
     //	Greet User
     private static void greetUser(User loggedInUser) {

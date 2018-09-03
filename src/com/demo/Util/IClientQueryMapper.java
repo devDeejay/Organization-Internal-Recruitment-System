@@ -22,7 +22,9 @@ public interface IClientQueryMapper {
 	
 	String ADD_REQUISITION_REQUEST = "INSERT INTO requisition_requests_table (requisition_request_id , requesting_manager_id, requesting_project_id, request_status, request_open_date, vacancy, required, skills_required, domain, executiveID) VALUES (requests_id_generator.nextval, ?, ?, ?, SYSDATE, ?, ?, ?, ?, ? )";
 
-	String GET_REQUISITION_REQUEST_ID = "SELECT requests_id_generator.CURRVAL FROM DUAL";
+    String GET_REQUISITION_REQUEST_ID = "SELECT requests_id_generator.CURRVAL FROM DUAL";
+
+    String GET_REQUISITION_REQUEST_ID_FROM_SUGGESTION_ID = "SELECT requisition_request_id FROM requisition_suggestions_table WHERE requisition_suggestion_id = ?";
 
 	String VIEW_ALL_REQUESTS = "SELECT * FROM requisition_requests_table WHERE requesting_manager_id = ? AND request_status = 500";
 
@@ -38,8 +40,9 @@ public interface IClientQueryMapper {
 
     String VIEW_ALL_REJECTED_SUGGESTIONS = "SELECT * FROM requisition_suggestions_table WHERE suggesting_executive_id = ? AND status_of_suggestion = 506";
 
-	String ACCEPT_REJECT_SUGGESTIONS = "UPDATE requisition_suggestions_table SET status_of_suggestion = ? WHERE requisition_suggestion_id = ?";
+    String ACCEPT_REJECT_SUGGESTIONS = "UPDATE requisition_suggestions_table SET status_of_suggestion = ? WHERE requisition_suggestion_id = ?";
 
 	String UPDATE_EMPLOYEE_ALLOCATION = "UPDATE employee_table SET emp_project_id = ?, emp_allocation_status = ? WHERE emp_id = ?";
 
+	String UPDATE_REQUISITION_REQUEST_STATUS = "UPDATE requisition_requests_table SET request_status = ? WHERE requisition_request_id = ?";
 }
