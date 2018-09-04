@@ -7,7 +7,7 @@ import com.demo.Service.Interface.ResouceManagerInterface;
 
 import java.util.ArrayList;
 
-public class ResouceManagerImplementation implements ResouceManagerInterface {
+public class ResouceManagerServiceImplementation implements ResouceManagerInterface {
 	
 	ResourceManagerDAOImplementation resourceManagerDAO = new ResourceManagerDAOImplementation(); 
 	
@@ -18,22 +18,19 @@ public class ResouceManagerImplementation implements ResouceManagerInterface {
 
     @Override
     public boolean acceptRejectSuggestions(int managerID, int requisitionSuggestionID, int choice) {
+        // Calling method in DAO Layer
         return resourceManagerDAO.acceptRejectSuggestionsInDatabase(managerID, requisitionSuggestionID, choice);
     }
 
     @Override
     public boolean updateProjectForEmployee( int managerID, int employeeID, int projectID) {
+        // Calling method in DAO Layer
         return resourceManagerDAO.updateProjectForEmployeeInDatabase(managerID, employeeID, projectID);
     }
 
     @Override
     public boolean updateProjectDetails(int managerID, int projectID) {
         return true;
-    }
-
-    @Override
-    public String generateReportForAllRequests(int maangerID) {
-    	return null;
     }
 
 	@Override

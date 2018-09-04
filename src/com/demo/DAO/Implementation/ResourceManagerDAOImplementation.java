@@ -109,33 +109,7 @@ public class ResourceManagerDAOImplementation implements
     public ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutiveFromDatabase(int managerID, int suggestionCode) {
         ArrayList<RequisitionSuggestions> listOfRequests = new ArrayList<>();
 
-        // Building The Relevant Suggestions Query
-
-        String SUGGESTIONS_QUERY = "";
-
-        switch (suggestionCode) {
-
-            case IRSValues.ALL_OPEN_SUGGESTIONS:
-                SUGGESTIONS_QUERY = IClientQueryMapper.VIEW_ALL_OPEN_SUGGESTIONS;
-                break;
-
-            case IRSValues.ALL_ACCEPTED_SUGGESTIONS:
-                SUGGESTIONS_QUERY = IClientQueryMapper.VIEW_ALL_ACCEPTED_SUGGESTIONS;
-                break;
-
-            case IRSValues.ALL_REJECTED_SUGGESTIONS:
-                SUGGESTIONS_QUERY = IClientQueryMapper.VIEW_ALL_REJECTED_SUGGESTIONS;
-                break;
-
-            default:
-                SUGGESTIONS_QUERY = IClientQueryMapper.VIEW_ALL_SUGGESTIONS;
-                break;
-        }
-
-        // Secondly, We Need To Get The Executive For This Project Manager
-        // We Get It From The Projects Table Which has the record of
-        // Project Name, Project Manager, Executive
-
+        // First, Get Executive ID For That Manager
         int executiveID = 0;
 
         try {
@@ -153,23 +127,27 @@ public class ResourceManagerDAOImplementation implements
             //  Getting Data in Result Set
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            //  If Result Set Has Data
+            //  If Result Set Has Data Only Then Proceed
             if (resultSet.next()) {
-                // Get The Executive ID
+                // Get The Executive ID For The Project Manager
                 executiveID = resultSet.getInt(1);
             } else {
                 // Else, Send null Back To Avoid Crash Ahead
                 return null;
             }
 
-            // Getting All Suggestion From The Database For That particular Executive ID
+            // If everything is working fine, till now then will proceed
+
+            // Getting All Suggestion From The Database From Executive For This Manager
 
             //  Preparing Statement
             preparedStatement = connection
-                    .prepareStatement(SUGGESTIONS_QUERY);
+                    .prepareStatement(IClientQueryMapper.VIEW_ALL_SUGGESTIONS);
 
             //  Inserting The Executive ID
             preparedStatement.setInt(1, executiveID);
+            preparedStatement.setInt(2, managerID);
+            preparedStatement.setInt(3, suggestionCode);
 
             //  Execute Query, Get Data in Result Set
             resultSet = preparedStatement.executeQuery();
@@ -212,33 +190,17 @@ public class ResourceManagerDAOImplementation implements
     public ArrayList<RequisitionRequest> viewAllRequestsMade(int managerID, int requestCode) {
         ArrayList<RequisitionRequest> listOfRequests = new ArrayList<>();
 
-        String REQUESTS_QUERY = "";
-
-        switch (requestCode) {
-
-            case IRSValues.ALL_CLOSED_REQUESTS:
-                REQUESTS_QUERY = IClientQueryMapper.VIEW_ALL_CLOSED_REQUESTS;
-                break;
-
-            case IRSValues.ALL_OPEN_REQUESTS:
-                REQUESTS_QUERY = IClientQueryMapper.VIEW_ALL_OPEN_REQUESTS;
-                break;
-
-            default:
-                REQUESTS_QUERY = IClientQueryMapper.VIEW_ALL_REQUESTS;
-                break;
-        }
-
         try {
 
             DBUtil dbUtilInstance = DBUtil.getInstance();
             Connection connection = dbUtilInstance.getConnection();
 
             PreparedStatement preparedStatement = connection
-                    .prepareStatement(REQUESTS_QUERY);
+                    .prepareStatement(IClientQueryMapper.VIEW_ALL_REQUESTS_FOR_MANAGER);
 
             // Getting Requests Made By Logged In Manager
             preparedStatement.setInt(1, managerID);
+            preparedStatement.setInt(2, requestCode);
 
             // Executing Query
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -361,4 +323,5 @@ public class ResourceManagerDAOImplementation implements
     public boolean updateProjectDetailsInDatabase(int managerID, int projectID) {
         return true;
     }
+
 }

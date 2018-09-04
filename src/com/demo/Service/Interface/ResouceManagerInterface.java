@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public interface ResouceManagerInterface {
     /*
      * TODO : Raise Requisition Requests For Concerned People.
-     * TODO : View All The Suggestions Made By RMGExecutiveDAOInterface.
+     * TODO : View All The Suggestions Made By ExecutiveDAOInterface.
      * TODO : Accept / Reject The Suggested Resources Against Requisitions.
      * TODO : If Accepted, Update The Project Status For Project ID, UserID.
      * TODO : Manually Update The Project Name, Code.
@@ -26,7 +26,4 @@ public interface ResouceManagerInterface {
     boolean updateProjectForEmployee(int managerID, int employeeID, int projectID);
 
     boolean updateProjectDetails(int managerID, int projectID);
-
-    String generateReportForAllRequests(int managerID);
-
 }

@@ -14,17 +14,7 @@ public class Test {
 		// TODO Auto-generated method stub
 		Scanner input = new Scanner(System.in);
 		
-		String inputStringDate = input.next();
-		
-		SimpleDateFormat format = new SimpleDateFormat("DD-MMM-YYYY");
-		java.util.Date parsedDate = null;
-		try {
-			parsedDate = format.parse(inputStringDate);
-			Date sqlDate = new Date(parsedDate.getTime());
-		} catch (ParseException e) {
-			System.out.println("Error Occured");
-			e.printStackTrace();
-		}
+
 		
 	System.out.println("All done" );
 	}

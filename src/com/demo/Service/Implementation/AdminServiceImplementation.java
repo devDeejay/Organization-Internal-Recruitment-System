@@ -6,7 +6,7 @@ import com.demo.Service.Interface.AdminServiceInterface;
 
 import java.util.ArrayList;
 
-public class AdminServiceInterfaceImplementation implements AdminServiceInterface {
+public class AdminServiceImplementation implements AdminServiceInterface {
 
     private AdminDAOImplementation adminDAOImplementation = new AdminDAOImplementation();
 

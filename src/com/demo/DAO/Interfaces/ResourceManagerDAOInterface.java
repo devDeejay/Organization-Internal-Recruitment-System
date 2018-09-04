@@ -9,7 +9,7 @@ public interface ResourceManagerDAOInterface {
 
     /*
      * TODO : Raise Requisition Requests For Concerned People.
-     * TODO : View All The Suggestions Made By RMGExecutiveDAOInterface.
+     * TODO : View All The Suggestions Made By ExecutiveDAOInterface.
      * TODO : Accept / Reject The Suggested Resources Against Requisitions.
      * TODO : If Accepted, Update The Project Status For Project ID, UserID.
      * TODO : Manually Update The Project Name, Code.
