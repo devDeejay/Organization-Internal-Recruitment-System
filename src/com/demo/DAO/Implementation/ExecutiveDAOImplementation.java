@@ -10,7 +10,6 @@ import com.demo.Util.IRSValues;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ExecutiveDAOImplementation implements ExecutiveDAOInterface {
 
@@ -61,7 +60,6 @@ public class ExecutiveDAOImplementation implements ExecutiveDAOInterface {
                 .employeeSkillsAsString(resultSet.getString("emp_skills"))
                 .yearsOfExperience(resultSet.getInt("emp_experience_years"))
                 .employeeStatus(resultSet.getInt("emp_allocation_status"));
-
 
         // Creating The Employee Object
         Employee employee = builder.build();
@@ -196,7 +194,7 @@ public class ExecutiveDAOImplementation implements ExecutiveDAOInterface {
     }
 
     @Override
-    public ArrayList<RequisitionRequest> viewAllRequisitionRequestsFromDatabase(int executiveID, int requestCode, Date date) {
+    public ArrayList<RequisitionRequest> viewAllOpenRequisitionRequestsFromDatabase(int executiveID, int requestCode, Date date) {
 
         ArrayList<RequisitionRequest> listOfRequests = new ArrayList<>();
 
@@ -206,11 +204,14 @@ public class ExecutiveDAOImplementation implements ExecutiveDAOInterface {
             Connection connection = dbUtilInstance.getConnection();
 
             PreparedStatement preparedStatement = connection
-                    .prepareStatement(IClientQueryMapper.VIEW_ALL_REQUESTS_FOR_MANAGER);
+                    .prepareStatement(IClientQueryMapper.VIEW_ALL_OPEN_REQUESTS_FOR_EXECUTIVE);
 
             // Getting Requests Made For This Executive
             preparedStatement.setInt(1, executiveID);
             preparedStatement.setInt(2, requestCode);
+            preparedStatement.setString(3, date.toString());
+
+            System.out.println(executiveID + " " + requestCode + " " + date);
 
             // Executing Query
             ResultSet resultSet = preparedStatement.executeQuery();

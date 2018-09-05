@@ -22,31 +22,41 @@ public class ResourceManagerDAOImplementation implements
     public int raiseRequisitionRequestInDatabase(RequisitionRequest request) {
 
         int resourceManagerID = request.getResourceManagerID();
-        int projectID = request.getProjectID();
         int vacancy = request.getVacancy();
-        int numberOfPeopleRequired = request.getProjectID();
+        int numberOfPeopleRequired = request.getNumberOfPeopleRequired();
         String skillsAsString = request.getSkillsAsString();
         String domainName = request.getDomainName();
-        int requestStatus = IRSValues.REQUISISTION_REQUEST_OPEN;
+        int requestStatus = IRSValues.REQUISITION_REQUEST_OPEN;
         int executiveID = 0;
+        int projectID = 0;
 
         PreparedStatement preparedStatement = null;
 
         // Get Project Executive ID From Database
 
         try {
-
+            System.out.println("Reached here");
             DBUtil dbUtilInstance = DBUtil.getInstance();
             Connection connection = dbUtilInstance.getConnection();
 
+            connection.setAutoCommit(false);
+
             preparedStatement = connection
-                    .prepareStatement(IClientQueryMapper.GET_PROJECT_EXECUTIVE_ID);
-            preparedStatement.setInt(1, projectID);
+                    .prepareStatement(IClientQueryMapper.GET_PROJECT_DETAILS_FOR_MANAGER);
+            preparedStatement.setInt(1, resourceManagerID);
+
+            System.out.println("Manager ID is " + resourceManagerID);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 executiveID = resultSet.getInt(1);
+                projectID = resultSet.getInt(2);
+                System.out.println("Got Executive ID " + executiveID);
+                System.out.println("Got Project ID " + projectID);
+            } else {
+                System.out.println("Executive Not Found For This Project");
+                return 0;
             }
 
         } catch (Exception e) {
@@ -55,8 +65,6 @@ public class ResourceManagerDAOImplementation implements
             System.out.println(e.getMessage());
             return 0;
         }
-
-        int id = 0;
 
         // Got Project Executive ID From Database Now Raise Request
 
@@ -92,20 +100,26 @@ public class ResourceManagerDAOImplementation implements
                  *
                  * if (resultSet.next()) { id = resultSet.getInt(1); }
                  */
+                connection.commit();
 
+                return 1;
             } else {
+                connection.rollback();
                 System.out.println("Returning Status Still FALSE");
             }
 
         } catch (Exception e) {
             // TODO: handle exception
             System.out.println(e.getMessage());
+            return 0;
         }
 
-        return 1;
+        return 0;
     }
 
+
     @Override
+
     public ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutiveFromDatabase(int managerID, int suggestionCode) {
         ArrayList<RequisitionSuggestions> listOfRequests = new ArrayList<>();
 
@@ -119,7 +133,7 @@ public class ResourceManagerDAOImplementation implements
 
             //  Preparing Statements
             PreparedStatement preparedStatement = connection
-                    .prepareStatement(IClientQueryMapper.GET_PROJECT_EXECUTIVE_ID);
+                    .prepareStatement(IClientQueryMapper.GET_PROJECT_DETAILS_FOR_MANAGER);
 
             //  Setting The Project Manager ID In Query
             preparedStatement.setInt(1, managerID);
@@ -230,7 +244,11 @@ public class ResourceManagerDAOImplementation implements
             System.out.println(e.getMessage());
         }
 
-        return listOfRequests;
+        if (listOfRequests.size() == 0) {
+            return null;
+        } else {
+            return listOfRequests;
+        }
     }
 
     @Override
@@ -292,6 +310,11 @@ public class ResourceManagerDAOImplementation implements
     @Override
     public boolean updateProjectForEmployeeInDatabase(int managerID, int employeeID, int projectID) {
 
+        int allocationStatus = IRSValues.UNALLOCATED_IN_ANY_PROJECT;
+        if (projectID != 0) {
+            allocationStatus = IRSValues.ALLOCATED_IN_PROJECT;
+        }
+
         DBUtil dbUtilInstance = DBUtil.getInstance();
         try (
                 // Try With Resources
@@ -300,7 +323,7 @@ public class ResourceManagerDAOImplementation implements
         ) {
 
             statement.setInt(1, projectID);
-            statement.setInt(2, IRSValues.ALLOCATED_IN_PROJECT);
+            statement.setInt(2, allocationStatus);
             statement.setInt(3, employeeID);
 
             int status = statement.executeUpdate();

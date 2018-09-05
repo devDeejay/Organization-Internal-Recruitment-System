@@ -30,5 +30,5 @@ public interface ExecutiveDAOInterface {
 
     //  TODO : View All Requisition Requests.
 
-    ArrayList<RequisitionRequest> viewAllRequisitionRequestsFromDatabase(int executiveID, int requestCode, java.util.Date date);
+    ArrayList<RequisitionRequest> viewAllOpenRequisitionRequestsFromDatabase(int executiveID, int requestCode, java.sql.Date date);
 }

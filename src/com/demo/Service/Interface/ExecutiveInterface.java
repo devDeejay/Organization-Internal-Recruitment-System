@@ -23,7 +23,7 @@ public interface ExecutiveInterface {
 
     //  TODO : Search Employee By Skills.
 
-    ArrayList<Employee> searchEmployeeBySkills(ArrayList<String> skills);
+    ArrayList<Employee> searchEmployeeBySkills(String skills);
 
     //  TODO : Assign RMG Project To Employee.
 

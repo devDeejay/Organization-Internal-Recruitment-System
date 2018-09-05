@@ -18,9 +18,12 @@ public interface IClientQueryMapper {
 
     // Resource Manager DAO Queries
 
-    String GET_PROJECT_EXECUTIVE_ID = "SELECT executive_ID FROM project_table WHERE project_manager_id = ?";
+    String GET_PROJECT_DETAILS_FOR_MANAGER = "SELECT executive_ID, project_id FROM project_table WHERE project_manager_id = ?";
 
-    String ADD_REQUISITION_REQUEST = "INSERT INTO requisition_requests_table (requisition_request_id , requesting_manager_id, requesting_project_id, request_status, request_open_date, vacancy, required, skills_required, domain, executiveID) VALUES (requests_id_generator.nextval, ?, ?, ?, SYSDATE, ?, ?, ?, ?, ? )";
+    String ADD_REQUISITION_REQUEST = "INSERT INTO requisition_requests_table " +
+            "(requisition_request_id , requesting_manager_id, requesting_project_id, request_status, " +
+            "request_open_date, vacancy, required, skills_required, domain, executiveID)" +
+            " VALUES (requests_id_generator.nextval, ?, ?, ?, SYSDATE, ?, ?, ?, ?, ? )";
 
     String GET_REQUISITION_REQUEST_ID = "SELECT requests_id_generator.CURRVAL FROM DUAL";
 
@@ -46,6 +49,8 @@ public interface IClientQueryMapper {
 
     String SEARCH_EMPLOYEE_BY_SKILLS = "SELECT * FROM employee_table WHERE emp_skills = ?";
 
-    String VIEW_ALL_REQUESTS_FOR_EXECUTIVE = "SELECT * FROM requisition_requests_table WHERE executiveID = ? AND request_status = ? AND request_close_date <= ?";
+    String VIEW_ALL_CLOSED_REQUESTS_FOR_EXECUTIVE = "SELECT * FROM requisition_requests_table WHERE executiveID = ? AND request_status = ? AND request_close_date <= TO_DATE(?,'yyyy-mm-dd')";
+
+    String VIEW_ALL_OPEN_REQUESTS_FOR_EXECUTIVE = "SELECT * FROM requisition_requests_table WHERE executiveID = ? AND request_status = ? AND request_open_date <= TO_DATE(?,'yyyy-mm-dd')";
 
 }

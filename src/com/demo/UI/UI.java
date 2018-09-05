@@ -1,6 +1,5 @@
 package com.demo.UI;
 
-import com.demo.DAO.Implementation.ResourceManagerDAOImplementation;
 import com.demo.Model.Employee;
 import com.demo.Model.RequisitionRequest;
 import com.demo.Model.RequisitionSuggestions;
@@ -14,8 +13,9 @@ import com.demo.Util.IRSValues;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Scanner;
 
 public class UI {
 
@@ -25,23 +25,18 @@ public class UI {
     //	Main Method Method
     final public static void main(String[] args) {
 
-
         input = new Scanner(System.in);
         inputString = new Scanner(System.in);
 
         User.Builder builder = new User.Builder();
-        builder.username("dhj").password("dhj").userID(506).name("Dhiraj");
+        builder.username("div96").password("timi123").userID(522).name("Divya Verma");
         User user = builder.build();
 
-        loginAsResourceManager(user);
-
-        //loginAsAdmin(user);
-        //startTheProgram();
+        loginAsExecutive(user);
     }
 
     //	Start The Program Method
     private static void startTheProgram() {
-
 
         System.out.println("Welcome To Internal Recruitment System");
         System.out.println("Press 1. To Login");
@@ -64,9 +59,9 @@ public class UI {
     private static void loginUser() {
 
         System.out.println("Enter Your Credentials");
+        System.out.println("Enter -1 To Go Back");
 
         System.out.println("Username : ");
-        System.out.println("( Enter -1 To Go Back )");
 
         String username = inputString.next();
 
@@ -103,13 +98,13 @@ public class UI {
                     loginAsAdmin(loggedInUser);
                     break;
 
-                case IRSValues.RMG_EXECUTIVE:
+                case IRSValues.EXECUTIVE:
                     System.out.println("Logging In As Executive");
-                    loginAsRMGExecutive(loggedInUser);
+                    loginAsExecutive(loggedInUser);
                     break;
 
                 case IRSValues.RESOURCE_MANAGER:
-                    System.out.println("Loggin In As Manager");
+                    System.out.println("Logging In As Manager");
                     loginAsResourceManager(loggedInUser);
                     break;
 
@@ -142,7 +137,7 @@ public class UI {
     // =========================================================
 
     private static void loginAsAdmin(User loggedInUser) {
-
+        printSpaces();
         greetUser(loggedInUser);
 
         /*
@@ -159,22 +154,22 @@ public class UI {
 
         AdminServiceImplementation adminService = new AdminServiceImplementation();
 
-        int adminInput = input.nextInt();
+        String adminInput = input.next();
 
         switch (adminInput) {
-            case 1:
+            case "1":
                 addUser(adminService);
                 break;
-            case 2:
+            case "2":
                 viewUsers(adminService);
                 break;
-            case 3:
+            case "3":
                 modifyUser(adminService);
                 break;
-            case 4:
+            case "4":
                 deleteUserFromDatabase(adminService);
                 break;
-            case -1:
+            case "-1":
                 startTheProgram();
                 break;
 
@@ -186,6 +181,10 @@ public class UI {
 
     }
 
+    private static void printSpaces() {
+        System.out.println("\n\n");
+    }
+
     // =========================================================
     // =                 Admin Functionality                   =
     // =========================================================
@@ -193,25 +192,27 @@ public class UI {
     //  1.1 - Adding User
     private static void addUser(AdminServiceImplementation adminService) {
 
-        System.out.println("Adding Users To Database...\n\n\n");
+        System.out.println("Adding Users To Database, Enter -1 to Go Back");
 
         System.out.println("Enter Full Name");
         String name = inputString.nextLine();
+        if (name == "-1") {
+            return;
+        }
+        while (!name.matches("[a-zA-Z]+$")) {
+            System.out.println("Please Enter A Valid Name");
+            name = inputString.nextLine();
+        }
 
         System.out.println("Enter Username");
         String username = inputString.nextLine();
 
         System.out.println("Enter Password");
         String password = inputString.nextLine();
-
-        System.out.println(
-                "Enter User Role Code : \n" +
-                        "101 For RESOURCE_MANAGER \n" +
-                        "102 For RMG_EXECUTIVE\n" +
-                        "103 For Admin\n"
-        );
-
-        int userGrade = input.nextInt();
+        int userGrade = 0;
+        while (userGrade == 0) {
+            userGrade = takeUserGradeFromUser();
+        }
 
         //Creating User Object To Be Passed Further
 
@@ -228,6 +229,39 @@ public class UI {
         } else {
             System.out.println("Failed To Add User");
         }
+    }
+
+    private static int takeUserGradeFromUser() {
+
+        System.out.println(
+                "Enter User Role Code : \n" +
+                        "101 For RESOURCE_MANAGER \n" +
+                        "102 For EXECUTIVE\n" +
+                        "103 For Admin\n"
+        );
+
+        String userGradeInput = input.next();
+
+        int userGrade = 0;
+
+        switch (userGradeInput) {
+            case "101":
+                userGrade = 101;
+                break;
+
+            case "102":
+                userGrade = 102;
+                break;
+
+            case "103":
+                userGrade = 103;
+                break;
+
+            default:
+                System.out.println("Please enter a valid User Grade");
+
+        }
+        return userGrade;
     }
 
     //  1.2 - Viewing Users
@@ -255,27 +289,24 @@ public class UI {
 
         System.out.println("Modifying A User, Start With Entering the user ID");
         int userID = input.nextInt();
+        input.nextLine();
 
         System.out.println("Enter The New Name");
-        String name = inputString.nextLine();
+        String name = input.nextLine();
 
         System.out.println("Enter The New UserName");
-        String username = inputString.nextLine();
+        String username = input.nextLine();
 
         System.out.println("Enter The New Password");
-        String password = inputString.nextLine();
+        String password = input.nextLine();
 
-        System.out.println(
-                "Enter New User Role Code : \n" +
-                        "101 For RESOURCE_MANAGER \n" +
-                        "102 For RMG_EXECUTIVE\n" +
-                        "103 For Admin\n"
-        );
-
-        int userRole = input.nextInt();
+        int userGrade = 0;
+        while (userGrade == 0) {
+            userGrade = takeUserGradeFromUser();
+        }
 
         User.Builder builder = new User.Builder();
-        builder.userID(userID).name(name).username(username).password(password).userGrade(userRole);
+        builder.userID(userID).name(name).username(username).password(password).userGrade(userGrade);
         User userToBeModified = builder.build();
 
         boolean status = adminService.modifyUser(userToBeModified);
@@ -297,8 +328,13 @@ public class UI {
         System.out.println("Existing Users...");
         viewUsers(adminService);
 
+        System.out.println("Enter -1 To Go Back");
         System.out.println("Enter User ID Of User To Be Deleted");
+
         int userID = input.nextInt();
+        if (userID == -1) {
+            return;
+        }
 
         User.Builder builder = new User.Builder();
         builder.userID(userID);
@@ -322,6 +358,7 @@ public class UI {
 
     private static void loginAsResourceManager(User loggedInUser) {
 
+        printSpaces();
         greetUser(loggedInUser);
         int managerID = loggedInUser.getUserID();
 
@@ -345,34 +382,34 @@ public class UI {
         ResouceManagerServiceImplementation resourceManagerService = new ResouceManagerServiceImplementation();
 
         input = new Scanner(System.in);
-        int rmgInput = input.nextInt();
+        String rmgInput = input.next();
 
         switch (rmgInput) {
-            case 1:
+            case "1":
                 raiseNewRequisitionRequest(resourceManagerService, managerID);
                 break;
 
-            case 2:
+            case "2":
                 viewExecutivesSuggestions(resourceManagerService, managerID);
                 break;
 
-            case 3:
+            case "3":
                 acceptRejectRequests(resourceManagerService, managerID);
                 break;
 
-            case 4:
+            case "4":
                 updateProjectAllocationForEmployee(resourceManagerService, managerID);
                 break;
 
-            case 5:
+            case "5":
                 updateProjectDetails(resourceManagerService, managerID);
                 break;
 
-            case 6:
+            case "6":
                 generateReportsForResourceManager(resourceManagerService, managerID);
                 break;
 
-            case -1:
+            case "-1":
                 startTheProgram();
                 break;
 
@@ -392,13 +429,10 @@ public class UI {
     // ====================================================================
 
 
-    // 2.1 - Raise New Requisition Request - DONE
+    // 2.1 - Raise New Requisition Request - DONE - WORKING
     private static void raiseNewRequisitionRequest(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
 
         System.out.println("Raising Requisition Request");
-
-        System.out.println("Enter Your Project ID");
-        int projectID = input.nextInt();
 
         System.out.println("Enter Vacancy Of People In Numbers");
         int vacancy = input.nextInt();
@@ -415,7 +449,6 @@ public class UI {
         RequisitionRequest.Builder builder = new RequisitionRequest.Builder();
         builder
                 .resourceManagerID(managerID)
-                .projectID(projectID)
                 .vacancy(vacancy)
                 .skillsAsString(skillsAsString)
                 .domainName(domainName)
@@ -522,20 +555,25 @@ public class UI {
         }
     }
 
-    // 2.4 - Update Project Allocation For Employee - DONE
+    // 2.4 - Update Project Allocation For Employee - DONE - WORKING
     private static void updateProjectAllocationForEmployee(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
 
         System.out.println("Updating Project Allocation For Employee");
+        System.out.println("Enter -1 To Go Back");
         System.out.println("Enter EmployeeID");
         int empID = input.nextInt();
 
-        System.out.println("Enter Project ID");
-        int projectID = input.nextInt();
+        if (empID == -1) {
+            return;
+        }
 
+        System.out.println("Enter Project ID");
+        System.out.println("Enter 0 For No Project");
+        int projectID = input.nextInt();
         if (resourceManagerService.updateProjectForEmployee(managerID, empID, projectID)) {
             System.out.println("Details Updated Successfully");
         } else {
-            System.out.println("Failed To Update Any Deatails");
+            System.out.println("Failed To Update Any Details");
         }
     }
 
@@ -551,64 +589,32 @@ public class UI {
         }
     }
 
-    // 2.6 - Generate Reports For Resource Manager
+    // 2.6 - Generate Reports For Resource Manager - DONE - PARTIALLY WORKING
     private static void generateReportsForResourceManager(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
 
         System.out.println("Generating Reports For Requests");
 
         // ================================================================
-        // =      			List Of All Closed Requests     		      =
-        // ================================================================
-
-        System.out.println("ALL CLOSED REQUESTS");
-        showRequests(resourceManagerService, managerID, IRSValues.ALL_CLOSED_REQUESTS);
-
-        // ================================================================
         // =      			List Of All Open Requests     				  =
         // ================================================================
 
+        printSpaces();
         System.out.println("ALL OPEN REQUESTS");
-        showRequests(resourceManagerService, managerID, IRSValues.ALL_OPEN_REQUESTS);
+        showRequests(resourceManagerService, managerID, IRSValues.REQUISITION_REQUEST_OPEN);
 
         // ================================================================
-        // =      				List Of All Requests     				  =
+        // =      			List Of All Closed Requests     		      =
         // ================================================================
 
-        System.out.println("ALL REQUESTS");
-        showRequests(resourceManagerService, managerID, IRSValues.ALL_REQUESTS);
-
+        printSpaces();
+        System.out.println("ALL CLOSED REQUESTS");
+        showRequests(resourceManagerService, managerID, IRSValues.REQUISITION_REQUEST_CLOSED);
 
     }
 
     // 2.6.1 Show Requests According to Type - DONE
     private static void showRequests(ResouceManagerServiceImplementation resourceManagerService, int managerID, int requestCode) {
         getAndDisplayRequests(resourceManagerService, managerID, requestCode);
-    }
-
-    private static void getAndDisplayRequests(ResouceManagerServiceImplementation resourceManagerService, int managerID, int requestCode) {
-        ArrayList<RequisitionRequest> listOfAllRequests = resourceManagerService.viewAllRequests(managerID, requestCode);
-
-        // Calling Printing Method For This Request Object
-
-        Iterator<RequisitionRequest> iterator = listOfAllRequests.iterator();
-        while (iterator.hasNext()) {
-            RequisitionRequest request = iterator.next();
-            printRequestObject(request);
-        }
-    }
-
-    private static void printRequestObject(RequisitionRequest request) {
-        System.out.println("{ \n" +
-                "	Request ID : " + request.getRequsitionID() + "\n" +
-                "	Domain Name : " + request.getDomainName() + "\n" +
-                "	Project ID : " + request.getProjectID() + "\n" +
-                "	Vacancy Of People : " + request.getVacancy() + "\n" +
-                "	Required People : " + request.getNumberOfPeopleRequired() + "\n" +
-                "	Skills Required : " + request.getSkillsAsString() + "\n" +
-                "	Request Status : " + request.getRequestStatus() + "\n" +
-                "	Request Open Date : " + request.getDateCreated() + "\n" +
-                "	Request Close Date : " + request.getDateClosed() + "\n}"
-        );
     }
 
     // 2.6.2 Show Suggestions According to Type - DONE
@@ -632,25 +638,61 @@ public class UI {
         System.out.println("}");
     }
 
+    // 2.6.3 Support Method For Manager Functionality
+    private static void getAndDisplayRequests(ResouceManagerServiceImplementation resourceManagerService, int managerID, int requestCode) {
+
+        ArrayList<RequisitionRequest> listOfAllRequests = resourceManagerService.viewAllRequests(managerID, requestCode);
+
+        if (listOfAllRequests == null) {
+            System.out.println("No Records Found");
+            return;
+        }
+
+        // Calling Printing Method For This Request Object
+
+        Iterator<RequisitionRequest> iterator = listOfAllRequests.iterator();
+        while (iterator.hasNext()) {
+            RequisitionRequest request = iterator.next();
+            printRequestObject(request);
+        }
+    }
+
+    // 2.6.4 Support Method For Manager Functionality
+    private static void printRequestObject(RequisitionRequest request) {
+
+        System.out.println("{ \n" +
+                "	Request ID : " + request.getRequsitionID() + "\n" +
+                "	Domain Name : " + request.getDomainName() + "\n" +
+                "	Project ID : " + request.getProjectID() + "\n" +
+                "	Vacancy Of People : " + request.getVacancy() + "\n" +
+                "	Required People : " + request.getNumberOfPeopleRequired() + "\n" +
+                "	Skills Required : " + request.getSkillsAsString() + "\n" +
+                "	Request Status : " + request.getRequestStatus() + "\n" +
+                "	Request Open Date : " + request.getDateCreated() + "\n" +
+                "	Request Close Date : " + request.getDateClosed() + "\n}"
+        );
+    }
+
     // ================================================================
     // =                                                              =
     // =          3. When User is Logged In As RMG Executive          =
     // =                                                              =
     // ================================================================
 
-    private static void loginAsRMGExecutive(User loggedInUser) {
+    private static void loginAsExecutive(User loggedInUser) {
 
         greetUser(loggedInUser);
 
-        int RMGExecutiveID = loggedInUser.getUserID();
+        int executiveID = loggedInUser.getUserID();
 
         System.out.println("Please Press 1 To Search Employee");
         System.out.println("Please Press 2 To Assign RMG Project To Employee");
         System.out.println("Please Press 3 To View All Requisition Requests");
         System.out.println("Please Press 4 To Generate Reports");
+        System.out.println("Please Press 5 To Suggest For Requests");
         System.out.println("Please Press -1 To Logout");
 
-        ExecutiveServiceImplementation rmgExecutiveService = new ExecutiveServiceImplementation();
+        ExecutiveServiceImplementation executiveService = new ExecutiveServiceImplementation();
 
         input = new Scanner(System.in);
         int rmgInput = input.nextInt();
@@ -658,19 +700,23 @@ public class UI {
         switch (rmgInput) {
             case 1:
                 //  TODO : Search Employee On Domain / Skill / Experience / ID.
-                searchEmployee(rmgExecutiveService);
+                searchEmployee(executiveService);
                 break;
             case 2:
                 //  TODO : Assign RMG Project To Employee.
-                assignProjectToRM(rmgExecutiveService, RMGExecutiveID);
+                assignProjectToRM(executiveService, executiveID);
                 break;
             case 3:
                 //  TODO : View All Requisition Requests.
-                viewAllRequisitionRequests(rmgExecutiveService, RMGExecutiveID);
+                viewAllRequisitionRequests(executiveService, executiveID);
                 break;
             case 4:
                 //  TODO : Generate Reports For Closed / Pending Requests from all Resource Managers for specific Date / Time / Closed / Pending.
-                generateReports(rmgExecutiveService, RMGExecutiveID);
+                generateReports(executiveService, executiveID);
+                break;
+            case 5:
+                //  TODO : Generate Suggestions.
+                giveSuggestionForRequest(executiveService, executiveID);
                 break;
             case -1:
                 startTheProgram();
@@ -678,9 +724,9 @@ public class UI {
 
             default:
                 System.out.println("Incorrect Input, Try Again");
-                loginAsRMGExecutive(loggedInUser);
+                loginAsExecutive(loggedInUser);
         }
-        loginAsRMGExecutive(loggedInUser);
+        loginAsExecutive(loggedInUser);
     }
 
     // ================================================================
@@ -689,7 +735,7 @@ public class UI {
 
     //  3.1 - Search Employee
 
-    private static void searchEmployee(ExecutiveServiceImplementation rmgExecutiveService) {
+    private static void searchEmployee(ExecutiveServiceImplementation executiveService) {
 
         System.out.println("Press 1 To Search By ID");
         System.out.println("Press 2 To Search By Domain");
@@ -697,46 +743,74 @@ public class UI {
         System.out.println("Press 4 To Search By Skills");
         System.out.println("Press -1 To Go Back To Previous Menu");
 
-        int rmgExecutiveInput = input.nextInt();
+        String executiveInput = input.next();
 
-        switch (rmgExecutiveInput) {
+        switch (executiveInput) {
 
-            case 1:
-                searchEmployeeByID(rmgExecutiveService);
+            case "1":
+                searchEmployeeByID(executiveService);
                 break;
 
-            case 2:
-                searchEmployeeByDomain(rmgExecutiveService);
+            case "2":
+                searchEmployeeByDomain(executiveService);
                 break;
 
-            case 3:
-                System.out.println("Enter The Minimum Number Of Years of Experience");
-                int yearsOfExperience = input.nextInt();
-                rmgExecutiveService.searchEmployeeByExperience(yearsOfExperience);
+            case "3":
+                searchEmployeeByExperience(executiveService);
                 break;
 
-            case 4:
-                String skills = input.nextLine();
-                String[] skillsArray = skills.split(" ");
-                ArrayList<String> skillsArrayList = new ArrayList<String>(Arrays.asList(skillsArray));
-                Collections.sort(skillsArrayList);
-                rmgExecutiveService.searchEmployeeBySkills(skillsArrayList);
+            case "4":
+               searchEmployeeBySkills(executiveService);
                 break;
 
-            case -1:
+            case "-1":
                 return;
 
             default:
-                searchEmployee(rmgExecutiveService);
-
+                System.out.println("Please enter valid input");
+                break;
         }
+        searchEmployee(executiveService);
+    }
+
+    private static void searchEmployeeBySkills(ExecutiveServiceImplementation executiveService) {
+        String skills = inputString.next();
+        executiveService.searchEmployeeBySkills(skills);
+    }
+
+    private static void searchEmployeeByExperience(ExecutiveServiceImplementation executiveService) {
+        System.out.println("Enter The Minimum Number Of Years of Experience");
+        System.out.println("Enter -1 To Go Back");
+        String experience = input.next();
+
+        while (!experience.matches("[0-9]+")) {
+            System.out.println("Please Give A Valid Number");
+            experience = input.next();
+            if (experience.equals("-1")) {
+                return;
+            }
+        }
+        int yearsOfExperience = Integer.parseInt(experience);
+
+        executiveService.searchEmployeeByExperience(yearsOfExperience);
     }
 
     //  3.1.1 - Search Employee By Domain
-    private static void searchEmployeeByDomain(ExecutiveServiceImplementation rmgExecutiveService) {
+    private static void searchEmployeeByDomain(ExecutiveServiceImplementation executiveService) {
         System.out.println("Enter The Domain Of Employee");
+        System.out.println("Enter -1 To Go Back");
+
+        String domainName = inputString.nextLine();
+        if (domainName.equals("-1")) {
+            return;
+        }
+        while (!domainName.matches("[a-zA-Z]+$")) {
+            System.out.println("Please Enter A Valid Name");
+            domainName = inputString.nextLine();
+        }
+
         String domain = inputString.next();
-        ArrayList<Employee> listOfEmployees = rmgExecutiveService.searchEmployeeByDomain(domain);
+        ArrayList<Employee> listOfEmployees = executiveService.searchEmployeeByDomain(domain);
 
         Iterator<Employee> iterator = listOfEmployees.iterator();
 
@@ -747,20 +821,35 @@ public class UI {
     }
 
     //  3.1.2 - Search Employee By ID
-    private static void searchEmployeeByID(ExecutiveServiceImplementation rmgExecutiveService) {
-        int ID = input.nextInt();
-        Employee e = rmgExecutiveService.searchEmployeeByID(ID);
+    private static void searchEmployeeByID(ExecutiveServiceImplementation executiveService) {
+        System.out.println("Enter Employee ID To Be Searched");
+        System.out.println("Enter -1 To Go Back");
+        String inputID = input.next();
+
+        while (!inputID.matches("[0-9]+")) {
+            System.out.println("Please Give A Valid Employee ID");
+            inputID = input.next().trim();
+            if (inputID.equals("-1")) {
+                return;
+            }
+        }
+
+        // Loop Will Break If User Enters a Number ID
+        Employee e = null;
+        int ID = Integer.valueOf(inputID);
+        if (ID > 0) {
+            e = executiveService.searchEmployeeByID(ID);
+        }
 
         if (e != null) {
             printEmployeeObject(e);
-
         } else {
             System.out.println("Employee With ID " + ID + " not found in the database.");
         }
     }
 
     //  3.2 - Assign Project To Employee
-    private static void assignProjectToRM(ExecutiveServiceImplementation rmgExecutiveService, int rmgExecutiveID) {
+    private static void assignProjectToRM(ExecutiveServiceImplementation executiveService, int executiveID) {
 
         System.out.println("Enter The Project ID");
         int projectID = input.nextInt();
@@ -770,16 +859,26 @@ public class UI {
 
         //TODO : Allocate the project
 
-        rmgExecutiveService.assignProjectToEmployee(projectID, employeeID);
+        executiveService.assignProjectToEmployee(projectID, employeeID);
     }
 
     //  3.2 - View All Requests
-    private static void viewAllRequisitionRequests(ExecutiveServiceImplementation rmgExecutiveService, int rmgExecutiveID) {
-        getRequest(rmgExecutiveService, rmgExecutiveID, IRSValues.ALL_OPEN_REQUESTS);
+    private static void viewAllRequisitionRequests(ExecutiveServiceImplementation executiveService, int executiveID) {
+        getRequest(executiveService, executiveID, IRSValues.REQUISITION_REQUEST_OPEN);
+    }
+
+    //  3.3 - Give Suggestion On Basis Of Requests
+
+    private static void giveSuggestionForRequest(ExecutiveServiceImplementation executiveService, int executiveID) {
+        // SHOW OPEN REQUESTS
+
+        // SEARCH EMPLOYEES
+
+
     }
 
     //  3.4 - Generate Reports
-    private static void generateReports(ExecutiveServiceImplementation rmgExecutiveService, int rmgExecutiveID) {
+    private static void generateReports(ExecutiveServiceImplementation executiveService, int executiveID) {
 
         System.out.println("Press 1 To Get All Closed Requests");
         System.out.println("Press 2 To Get All Closed Request By Some Date");
@@ -787,33 +886,35 @@ public class UI {
         System.out.println("Press 4 To Get All Open Request By Some Date");
         System.out.println("Press -1 To Go Back To Previous Section");
 
-        int adminInput = input.nextInt();
-
-        switch (adminInput) {
-            case 1:
-                getRequest(rmgExecutiveService, rmgExecutiveID, IRSValues.ALL_CLOSED_REQUESTS);
+        String executiveInput = input.next();
+        Date date;
+        switch (executiveInput) {
+            case "1":
+                getRequest(executiveService, executiveID, IRSValues.ALL_CLOSED_REQUESTS);
                 break;
 
-            case 2:
-
-                Date date = getDateFromUserAndParseIt();
-                getRequest(rmgExecutiveService, rmgExecutiveID, IRSValues.ALL_CLOSED_REQUESTS, date);
+            case "2":
+                date = getDateFromUserAndParseIt();
+                getRequest(executiveService, executiveID, IRSValues.ALL_CLOSED_REQUESTS, date);
                 break;
 
-            case 3:
-                getRequest(rmgExecutiveService, rmgExecutiveID, IRSValues.ALL_OPEN_REQUESTS);
+            case "3":
+                getRequest(executiveService, executiveID, IRSValues.ALL_OPEN_REQUESTS);
                 break;
 
-            case 4:
+            case "4":
+                date = getDateFromUserAndParseIt();
+                getRequest(executiveService, executiveID, IRSValues.ALL_OPEN_REQUESTS, date);
                 break;
 
-            case -1:
+            case "-1":
                 return;
 
             default:
                 System.out.println("Invalid Input, Try Again");
                 break;
         }
+        generateReports(executiveService, executiveID);
     }
 
     private static Date getDateFromUserAndParseIt() {
@@ -825,7 +926,7 @@ public class UI {
         java.sql.Date sqlDate = null;
         try {
             parsedDate = format.parse(inputStringDate);
-            sqlDate = new java.sql.Date(parsedDate.getTime());
+            sqlDate = new java.sql.Date(parsedDate.getTime() + 86400000);
         } catch (ParseException e) {
             System.out.println("Invalid Date Format");
             e.printStackTrace();
@@ -833,8 +934,8 @@ public class UI {
         return sqlDate;
     }
 
-    private static void getRequest(ExecutiveServiceImplementation rmgExecutiveService, int rmgExecutiveID, int requestCode, Date date) {
-        ArrayList<RequisitionRequest> listOfRequests = rmgExecutiveService.viewAllRequisitionRequests(rmgExecutiveID, requestCode, date);
+    private static void getRequest(ExecutiveServiceImplementation executiveService, int executiveID, int requestCode, Date date) {
+        ArrayList<RequisitionRequest> listOfRequests = executiveService.viewAllRequisitionRequests(executiveID, requestCode, date);
 
         Iterator<RequisitionRequest> iterator = listOfRequests.iterator();
 
@@ -844,11 +945,11 @@ public class UI {
         }
     }
 
-    private static void getRequest(ExecutiveServiceImplementation rmgExecutiveService, int rmgExecutiveID, int requestCode) {
-        ArrayList<RequisitionRequest> listOfRequests = rmgExecutiveService.viewAllRequisitionRequests(
-                rmgExecutiveID,
+    private static void getRequest(ExecutiveServiceImplementation executiveService, int executiveID, int requestCode) {
+        ArrayList<RequisitionRequest> listOfRequests = executiveService.viewAllRequisitionRequests(
+                executiveID,
                 requestCode,
-                new java.sql.Date(new java.util.Date(System.currentTimeMillis()).getTime())
+                new java.sql.Date(new java.util.Date(System.currentTimeMillis() + 86400000).getTime())
         );
 
         Iterator<RequisitionRequest> iterator = listOfRequests.iterator();
@@ -860,13 +961,13 @@ public class UI {
     }
 
     private static void printEmployeeObject(Employee e) {
-        if (e.getEmployeeStatus() == IRSValues.UNALLOCATED) {
+        if (e.getEmployeeStatus() == IRSValues.UNALLOCATED_IN_ANY_PROJECT) {
             System.out.println("Unallocated");
         } else {
             System.out.println("Allocated");
         }
 
-        System.out.println(e.getEmployeeStatus() == IRSValues.UNALLOCATED ? "Unallocated" : "Allocated");
+        System.out.println(e.getEmployeeStatus() == IRSValues.UNALLOCATED_IN_ANY_PROJECT ? "Unallocated" : "Allocated");
 
         System.out.println(
                 "   ID : " + e.getEmployeeID() + "\n" +
@@ -879,7 +980,6 @@ public class UI {
                         "\n"
         );
     }
-
 
     // =================================
     // =                               =

@@ -34,11 +34,8 @@ public class ExecutiveServiceImplementation implements ExecutiveInterface {
     }
 
     @Override
-    public ArrayList<Employee> searchEmployeeBySkills(ArrayList<String> skills) {
-
-        String skillsAsString = convertSkillsToString(skills);
-
-        return executiveDAO.searchEmployeeBySkillsFromDatabase(skillsAsString);
+    public ArrayList<Employee> searchEmployeeBySkills(String skills) {
+        return executiveDAO.searchEmployeeBySkillsFromDatabase(skills);
     }
 
     @Override
@@ -48,19 +45,6 @@ public class ExecutiveServiceImplementation implements ExecutiveInterface {
 
     @Override
     public ArrayList<RequisitionRequest> viewAllRequisitionRequests(int rmgExecutiveID, int requestCode, Date date) {
-        return executiveDAO.viewAllRequisitionRequestsFromDatabase(rmgExecutiveID, requestCode, date);
-    }
-
-    private String convertSkillsToString(ArrayList<String> skills) {
-        StringBuilder skillsAsStrings = new StringBuilder();
-
-        skillsAsStrings.append("[");
-        for (String s: skills) {
-            skillsAsStrings.append(s + ",");
-        }
-        skillsAsStrings.deleteCharAt(skillsAsStrings.length() - 1);
-        skillsAsStrings.append("]");
-
-        return skillsAsStrings.toString();
+        return executiveDAO.viewAllOpenRequisitionRequestsFromDatabase(rmgExecutiveID, requestCode, date);
     }
 }
