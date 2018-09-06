@@ -39,12 +39,19 @@ public class ExecutiveServiceImplementation implements ExecutiveInterface {
     }
 
     @Override
-    public boolean assignProjectToEmployee(int empID, int projectID) {
-        return executiveDAO.assignProjectToEmployeeFromDatabase(empID, projectID);
+    public boolean assignProjectToEmployee(int empID, int projectID, int executiveID) {
+        return executiveDAO.assignProjectToEmployeeFromDatabase(empID, projectID, executiveID);
     }
 
     @Override
     public ArrayList<RequisitionRequest> viewAllRequisitionRequests(int rmgExecutiveID, int requestCode, Date date) {
         return executiveDAO.viewAllOpenRequisitionRequestsFromDatabase(rmgExecutiveID, requestCode, date);
     }
+
+    @Override
+    public boolean giveSuggestion(int executiveID, int requestID, String combineEmployeeID) {
+        return executiveDAO.giveSuggestion(executiveID, requestID, combineEmployeeID);
+    }
+
+
 }

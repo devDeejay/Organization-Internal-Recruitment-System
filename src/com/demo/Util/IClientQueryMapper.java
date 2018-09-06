@@ -20,6 +20,10 @@ public interface IClientQueryMapper {
 
     String GET_PROJECT_DETAILS_FOR_MANAGER = "SELECT executive_ID, project_id FROM project_table WHERE project_manager_id = ?";
 
+    String GET_EXECUTIVE_ID_FOR_PROJECT = "SELECT executive_ID FROM project_Table WHERE project_ID = ?";
+
+    String GET_MANAGER_ID_FOR_PROJECT = "SELECT project_manager_id FROM project_Table WHERE project_ID = ?";
+
     String ADD_REQUISITION_REQUEST = "INSERT INTO requisition_requests_table " +
             "(requisition_request_id , requesting_manager_id, requesting_project_id, request_status, " +
             "request_open_date, vacancy, required, skills_required, domain, executiveID)" +
@@ -30,6 +34,8 @@ public interface IClientQueryMapper {
     String GET_REQUISITION_REQUEST_ID_FROM_SUGGESTION_ID = "SELECT requisition_request_id FROM requisition_suggestions_table WHERE requisition_suggestion_id = ?";
 
     String VIEW_ALL_REQUESTS_FOR_MANAGER = "SELECT * FROM requisition_requests_table WHERE requesting_manager_id = ? AND request_status = ?";
+
+    String VIEW_ALL_REQUESTS_FOR_EXECUTIVE = "SELECT * FROM requisition_requests_table WHERE executiveID = ? AND request_status = ?";
 
     String VIEW_ALL_SUGGESTIONS = "SELECT * FROM requisition_suggestions_table WHERE suggesting_executive_id = ? AND requesting_manager_id = ? AND status_of_suggestion = ?";
 
@@ -53,4 +59,5 @@ public interface IClientQueryMapper {
 
     String VIEW_ALL_OPEN_REQUESTS_FOR_EXECUTIVE = "SELECT * FROM requisition_requests_table WHERE executiveID = ? AND request_status = ? AND request_open_date <= TO_DATE(?,'yyyy-mm-dd')";
 
+    String INSERT_NEW_SUGGESTIONS = "INSERT INTO requisition_suggestions_table( requisition_suggestion_id, requisition_request_id, suggested_project_id, suggesting_executive_id, requesting_manager_id, suggested_employees, status_of_suggestion) VALUES(suggestions_id_generator.nextval, ?, ?, ?, ?, ?, ? )";
 }

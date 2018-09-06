@@ -9,9 +9,11 @@ public class RequisitionSuggestions extends Employee {
 
 	private int requisitionSuggestionID;
 	private int requisitionRequestID;
-	private int suggestedEmployeeID;
+	private String suggestedEmployeeID;
 	private int suggestedProjectID;
 	private int suggestionStatus;
+	private int executiveID;
+	private int managerID;
 
 	public int getRequisitionSuggestionID() {
 		return requisitionSuggestionID;
@@ -21,7 +23,15 @@ public class RequisitionSuggestions extends Employee {
 		return requisitionRequestID;
 	}
 
-	public int getSuggestedEmployeeID() {
+	public int getExecutiveID() {
+		return executiveID;
+	}
+
+	public int getManagerID() {
+		return managerID;
+	}
+
+	public String getSuggestedEmployeeID() {
 		return suggestedEmployeeID;
 	}
 
@@ -36,11 +46,13 @@ public class RequisitionSuggestions extends Employee {
 	public static class Builder {
 
 		private int requisitionSuggestionID;
-		private int suggestedEmployeeID;
+		private String suggestedEmployeeID;
 		private int suggestedProjectID;
 		private int suggestionStatus;
 		private int requisitionRequestID;
-		
+		private int executiveID;
+		private int managerID;
+
 		public Builder() {
 
 		}
@@ -54,7 +66,17 @@ public class RequisitionSuggestions extends Employee {
 			return this;
 		}
 
-		public Builder suggestedEmployeeID(int suggestedEmployeeID) {
+		public Builder managerID(int managerID) {
+			this.managerID = managerID;
+			return this;
+		}
+
+		public Builder executiveID(int executiveID) {
+			this.executiveID = executiveID;
+			return this;
+		}
+
+		public Builder suggestedEmployeeID(String suggestedEmployeeID) {
 			this.suggestedEmployeeID = suggestedEmployeeID;
 			return this;
 		}
@@ -78,9 +100,11 @@ public class RequisitionSuggestions extends Employee {
 
 	private RequisitionSuggestions(Builder builder) {
 		this.requisitionSuggestionID = builder.requisitionSuggestionID;
+		this.requisitionRequestID = builder.requisitionRequestID;
 		this.suggestedEmployeeID = builder.suggestedEmployeeID;
 		this.suggestedProjectID = builder.suggestedProjectID;
 		this.suggestionStatus = builder.suggestionStatus;
-		this.requisitionRequestID = builder.requisitionRequestID;
+		this.executiveID = builder.executiveID;
+		this.managerID = builder.managerID;
 	}
 }

@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 //	==========================================
 //	=                                        =
 //	=  	  		DBUtil.java Class     		 =
-//	=   Following Singleton Design Pattern   =
+//	=   Following Singleton Design Pattern   =  // Singleton will cause problems
 //	=                                        =
 //	==========================================
 
@@ -27,6 +27,10 @@ public class DBUtil {
 	public static DBUtil getInstance() {
 
 		if (dbUtilInstance == null) {
+
+			// Only one user will be able to interact with the database at a time
+			// Cos we are using same object for every user
+
 			synchronized (DBUtil.class) {
 				if (dbUtilInstance == null) {
 					dbUtilInstance = new DBUtil();

@@ -117,9 +117,7 @@ public class ResourceManagerDAOImplementation implements
         return 0;
     }
 
-
     @Override
-
     public ArrayList<RequisitionSuggestions> viewSuggestionsMadeByExecutiveFromDatabase(int managerID, int suggestionCode) {
         ArrayList<RequisitionSuggestions> listOfRequests = new ArrayList<>();
 
@@ -177,7 +175,7 @@ public class ResourceManagerDAOImplementation implements
                         .requisitionSuggestionID(
                                 resultSet.getInt("requisition_suggestion_id"))
                         .suggestedEmployeeID(
-                                resultSet.getInt("suggested_employees"))
+                                resultSet.getString("suggested_employees"))
                         .suggestedProjectID(
                                 resultSet.getInt("suggested_project_id"))
                         .suggestionStatus(
@@ -316,11 +314,24 @@ public class ResourceManagerDAOImplementation implements
         }
 
         DBUtil dbUtilInstance = DBUtil.getInstance();
-        try (
-                // Try With Resources
-                Connection connection = dbUtilInstance.getConnection();
-                PreparedStatement statement = connection.prepareStatement(IClientQueryMapper.UPDATE_EMPLOYEE_ALLOCATION);
-        ) {
+        try {
+
+            Connection connection = dbUtilInstance.getConnection();
+            PreparedStatement statement = connection.prepareStatement(IClientQueryMapper.GET_MANAGER_ID_FOR_PROJECT);
+
+            statement.setInt(1, projectID);
+
+            ResultSet resultSet = statement.executeQuery();
+            int managerIDForProject = resultSet.getInt(1);
+
+            if (managerID != managerIDForProject) {
+                System.out.println("You are not a Manager for this Project");
+                return false;
+            }
+
+            // Only If The Correct Manager is working, only then he will be able to Allocate The employee
+
+            statement = connection.prepareStatement(IClientQueryMapper.UPDATE_EMPLOYEE_ALLOCATION);
 
             statement.setInt(1, projectID);
             statement.setInt(2, allocationStatus);
@@ -335,7 +346,7 @@ public class ResourceManagerDAOImplementation implements
             }
 
         } catch (SQLException e) {
-            System.out.println("Exception Occured While Allocating Project To Employee");
+            System.out.println("Exception Occurred While Allocating Project To Employee");
             System.out.println(e.getMessage());
             e.printStackTrace();
             return false;

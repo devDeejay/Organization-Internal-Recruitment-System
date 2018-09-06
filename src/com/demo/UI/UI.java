@@ -8,6 +8,7 @@ import com.demo.Service.Implementation.AdminServiceImplementation;
 import com.demo.Service.Implementation.ExecutiveServiceImplementation;
 import com.demo.Service.Implementation.ResouceManagerServiceImplementation;
 import com.demo.Service.Implementation.UserServiceImplementation;
+import com.demo.Util.DBUtil;
 import com.demo.Util.IRSValues;
 
 import java.sql.Date;
@@ -29,27 +30,36 @@ public class UI {
         inputString = new Scanner(System.in);
 
         User.Builder builder = new User.Builder();
-        builder.username("div96").password("timi123").userID(522).name("Divya Verma");
+        //builder.username("div96").password("timi123").userID(522).name("Divya Verma");
+        builder.username("dhiraj").password("dhiraj").userID(1134).name("Dhiraj Trivedi");
+        builder.username("DJ").password("DJ").userID(199).name("Dhananjay Trivedi");
         User user = builder.build();
 
-        loginAsExecutive(user);
+        //loginAsExecutive(user);
+        //loginAsResourceManager(user);
+        loginAsAdmin(user);
     }
 
     //	Start The Program Method
     private static void startTheProgram() {
 
+        printSymbols();
         System.out.println("Welcome To Internal Recruitment System");
         System.out.println("Press 1. To Login");
         System.out.println("Press 2. To Exit");
-
-        int userInput = input.nextInt();
+        String userInput = input.nextLine();
 
         switch (userInput) {
-            case 1:
+            // Login The User
+            case "1":
                 loginUser();
                 break;
-            case 2:
+
+            //  Else, Exit Program
+            case "2":
                 System.out.println("Have a great day!");
+                //Closing Any Database Connection If Opened By Program
+                DBUtil.getInstance().closeConnection();
                 System.exit(0);
         }
         startTheProgram();
@@ -58,16 +68,22 @@ public class UI {
     //	Login user Method
     private static void loginUser() {
 
+        // This part of code asks for user credentials and processes it for validation
+
         System.out.println("Enter Your Credentials");
         System.out.println("Enter -1 To Go Back");
-
         System.out.println("Username : ");
 
         String username = inputString.next();
 
+        // If user wants to go back
         if (username.equals("-1")) {
-            startTheProgram();
+            return;
         }
+
+        /*
+         * Else, proceed with Login.
+         */
 
         System.out.println("Password : ");
         String password = inputString.next();
@@ -81,7 +97,8 @@ public class UI {
         User newUser = builder.build();
 
         /*
-         * Getting LoggedInUser Object Back From Database.
+         * Getting LoggedInUser Object Back From Database,
+         * Which contains validation information.
          */
 
         User loggedInUser = checkUserCredentials(newUser);
@@ -137,14 +154,8 @@ public class UI {
     // =========================================================
 
     private static void loginAsAdmin(User loggedInUser) {
-        printSpaces();
+        printSymbols();
         greetUser(loggedInUser);
-
-        /*
-         * TODO : Add Users and their Roles.
-         * TODO : Modify Users and their Roles.
-         * TODO : Delete Users.
-         */
 
         System.out.println("Please Press 1 To Add User");
         System.out.println("Please Press 2 To View Users");
@@ -170,19 +181,12 @@ public class UI {
                 deleteUserFromDatabase(adminService);
                 break;
             case "-1":
-                startTheProgram();
-                break;
+                return;
 
             default:
-                System.out.println("Please enter a valid input.");
+                System.out.println("Please Enter A Valid Input.");
         }
-
         loginAsAdmin(loggedInUser);
-
-    }
-
-    private static void printSpaces() {
-        System.out.println("\n\n");
     }
 
     // =========================================================
@@ -192,35 +196,40 @@ public class UI {
     //  1.1 - Adding User
     private static void addUser(AdminServiceImplementation adminService) {
 
-        System.out.println("Adding Users To Database, Enter -1 to Go Back");
+        System.out.println("***** Adding Users To Database *****\n");
+
+        /*
+         * Get Name, Username, Password, UserGrade From User
+         */
 
         System.out.println("Enter Full Name");
-        String name = inputString.nextLine();
-        if (name == "-1") {
-            return;
-        }
-        while (!name.matches("[a-zA-Z]+$")) {
-            System.out.println("Please Enter A Valid Name");
-            name = inputString.nextLine();
-        }
+        String name = getAValidStringFromUser("Enter A Valid Name");
 
         System.out.println("Enter Username");
         String username = inputString.nextLine();
 
         System.out.println("Enter Password");
         String password = inputString.nextLine();
-        int userGrade = 0;
-        while (userGrade == 0) {
-            userGrade = takeUserGradeFromUser();
-        }
 
-        //Creating User Object To Be Passed Further
+        System.out.println("Enter User Grade");
+        System.out.println("101 For Resource Manager");
+        System.out.println("102 For Executive");
+        System.out.println("103 For Admin");
+
+        int userGrade = getAValidUserGradeFromUser("Enter A Valid User Grade");
+
+        /*
+         * Creating User Object To Be Passed Further
+         */
 
         User.Builder builder = new User.Builder();
         builder.username(username).password(password).userGrade(userGrade).name(name);
         User userToBeAdded = builder.build();
 
-        //Calling The Method and Getting Its Return Status
+        /*
+         * Calling The AddUser() method and Getting Its Return Status
+         */
+
         boolean status = adminService.addUser(userToBeAdded);
 
         //Printing Out Relevant Message
@@ -231,43 +240,19 @@ public class UI {
         }
     }
 
-    private static int takeUserGradeFromUser() {
-
-        System.out.println(
-                "Enter User Role Code : \n" +
-                        "101 For RESOURCE_MANAGER \n" +
-                        "102 For EXECUTIVE\n" +
-                        "103 For Admin\n"
-        );
-
-        String userGradeInput = input.next();
-
-        int userGrade = 0;
-
-        switch (userGradeInput) {
-            case "101":
-                userGrade = 101;
-                break;
-
-            case "102":
-                userGrade = 102;
-                break;
-
-            case "103":
-                userGrade = 103;
-                break;
-
-            default:
-                System.out.println("Please enter a valid User Grade");
-
+    private static int getAValidUserGradeFromUser(String message) {
+        // While User Grade is not in Range 101 To 103
+        int userGradeID = getAValidNumberFromUser(message);
+        while (!(userGradeID <= IRSValues.ADMIN && userGradeID >= IRSValues.RESOURCE_MANAGER)) {
+            userGradeID = getAValidNumberFromUser(message);
         }
-        return userGrade;
+        return userGradeID;
     }
 
     //  1.2 - Viewing Users
     private static void viewUsers(AdminServiceImplementation adminService) {
 
-        System.out.println("Viewing Users In Database");
+        System.out.println("***** Viewing Users In Database *****");
         ArrayList<User> usersInDatabase = adminService.viewUsers();
 
         System.out.println();
@@ -275,11 +260,11 @@ public class UI {
             System.out.print("	{");
 
             System.out.print(
-                    " Name : " + user.getName() + ", " +
-                            "Grade : " + user.getUserGrade() + ", " +
-                            "User ID : " + user.getUserID() + " ");
+                    "       Name : " + user.getName() + ", " +
+                            "       Grade : " + user.getUserGrade() + ", " +
+                            "       User ID : " + user.getUserID() + " ");
 
-            System.out.println("}");
+            System.out.println("    }");
         }
         System.out.println();
     }
@@ -287,12 +272,12 @@ public class UI {
     //  1.3 - Modify User
     private static void modifyUser(AdminServiceImplementation adminService) {
 
-        System.out.println("Modifying A User, Start With Entering the user ID");
-        int userID = input.nextInt();
-        input.nextLine();
+        System.out.println("***** Modifying A User, Start With Entering the user ID *****");
+
+        int userID = getAValidNumberFromUser("Enter User In Correct Format");
 
         System.out.println("Enter The New Name");
-        String name = input.nextLine();
+        String name = getAValidStringFromUser("Enter A Valid Name For User");
 
         System.out.println("Enter The New UserName");
         String username = input.nextLine();
@@ -300,10 +285,7 @@ public class UI {
         System.out.println("Enter The New Password");
         String password = input.nextLine();
 
-        int userGrade = 0;
-        while (userGrade == 0) {
-            userGrade = takeUserGradeFromUser();
-        }
+        int userGrade = getAValidUserGradeFromUser("New User Grade Must Be A Valid Username");
 
         User.Builder builder = new User.Builder();
         builder.userID(userID).name(name).username(username).password(password).userGrade(userGrade);
@@ -317,24 +299,19 @@ public class UI {
         } else {
             System.out.println("Failed To Modify User, No Changes Were Saved");
         }
-
     }
 
     //  1.4 - Delete User
     private static void deleteUserFromDatabase(AdminServiceImplementation adminService) {
 
-        System.out.println("Delete An Existing User...");
+        System.out.println("***** Delete An Existing User *****");
 
-        System.out.println("Existing Users...");
+        System.out.println("Existing Users : ");
         viewUsers(adminService);
 
-        System.out.println("Enter -1 To Go Back");
         System.out.println("Enter User ID Of User To Be Deleted");
 
-        int userID = input.nextInt();
-        if (userID == -1) {
-            return;
-        }
+        int userID = getAValidNumberFromUser("This doesn't look like a UserId");
 
         User.Builder builder = new User.Builder();
         builder.userID(userID);
@@ -358,30 +335,27 @@ public class UI {
 
     private static void loginAsResourceManager(User loggedInUser) {
 
-        printSpaces();
+        printSymbols();
         greetUser(loggedInUser);
         int managerID = loggedInUser.getUserID();
 
         /*
-         * TODO : Raise Requisition Requests For Concerned People.
+         *
          * TODO : View All The Suggestions Made By ExecutiveDAOInterface.
          * TODO : Accept / Reject The Suggested Resources Against Requisitions.
-         * TODO : If Accepted, Update The Project Status For Project ID, UserID.
          * TODO : Manually Update The Project Name, Code.
          * TODO : Generate Reports For Pending As Well As Closed Requests of his projects.
          */
 
         System.out.println("Press 1 To Raise New Requisition Request");
-        System.out.println("Press 2 To View All Suggestion Made By RMG Executive");
-        System.out.println("Press 3 To Accept / Reject Requests");
+        System.out.println("Press 2 To See Executive Suggestions For " + loggedInUser.getName());
+        System.out.println("Press 3 To Accept / Reject the Suggestions");
         System.out.println("Press 4 To Update Project Allocation For Employee");
-        System.out.println("Press 5 To Update Project Details");
-        System.out.println("Press 6 To See Reports");
+        System.out.println("Press 5 To See Reports");
         System.out.println("Press -1 To Go Logout");
 
         ResouceManagerServiceImplementation resourceManagerService = new ResouceManagerServiceImplementation();
 
-        input = new Scanner(System.in);
         String rmgInput = input.next();
 
         switch (rmgInput) {
@@ -394,7 +368,7 @@ public class UI {
                 break;
 
             case "3":
-                acceptRejectRequests(resourceManagerService, managerID);
+                acceptRejectSuggestions(resourceManagerService, managerID);
                 break;
 
             case "4":
@@ -402,20 +376,14 @@ public class UI {
                 break;
 
             case "5":
-                updateProjectDetails(resourceManagerService, managerID);
-                break;
-
-            case "6":
-                generateReportsForResourceManager(resourceManagerService, managerID);
+                generateReportsForResourceManager(resourceManagerService, loggedInUser);
                 break;
 
             case "-1":
-                startTheProgram();
-                break;
+                return;
 
             default:
                 System.out.println("Enter Valid Input, Please Try Again");
-                loginAsResourceManager(loggedInUser);
                 break;
         }
 
@@ -428,47 +396,61 @@ public class UI {
     // =                  Resource Manager Functionality                  =
     // ====================================================================
 
-
     // 2.1 - Raise New Requisition Request - DONE - WORKING
     private static void raiseNewRequisitionRequest(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
 
-        System.out.println("Raising Requisition Request");
+        /*
+         * Get Vacancy, Skills, Domain, Number of Required People at moment
+         */
+
+
+        printSymbols();
+        System.out.println("***** Raising Requisition Request *****");
 
         System.out.println("Enter Vacancy Of People In Numbers");
-        int vacancy = input.nextInt();
+        int vacancy = getAValidNumberFromUser("Enter Valid Vacancy");
+        if (vacancy < 0) {
+            return;
+        }
 
         System.out.println("Enter The Skills");
-        String skillsAsString = inputString.nextLine();
+        String skills = inputString.nextLine().trim().toLowerCase();
+
+        // Capitalizing First Letter of Skill
+        skills = skills.substring(0, 1).toUpperCase() + skills.substring(1);
 
         System.out.println("Enter Domain Name");
-        String domainName = inputString.nextLine();
+        String domainName = getAValidStringFromUser("Enter A Valid Domain Name");
 
         System.out.println("Enter Number Of People Required");
-        int numberOfPeopleRequired = input.nextInt();
+        int numberOfPeopleRequired = getAValidNumberFromUser("Enter A Valid Number Of Required People");
 
+        // Building The Requisition Request Object
         RequisitionRequest.Builder builder = new RequisitionRequest.Builder();
         builder
                 .resourceManagerID(managerID)
                 .vacancy(vacancy)
-                .skillsAsString(skillsAsString)
+                .skillsAsString(skills)
                 .domainName(domainName)
                 .numberOfPeopleRequired(numberOfPeopleRequired);
 
         RequisitionRequest newRequisitionRequest = builder.build();
 
+        // Calling Service Layer For Processing
         int requisitionRequestID = resourceManagerService.raiseRequisitionRequest(newRequisitionRequest);
 
+        // Checking For Returning Values
         if (requisitionRequestID != 0) {
-            System.out.println("Requisition Request Raised With ID " + requisitionRequestID);
+            System.out.println("Requisition Request Raised");
         } else {
-            System.out.println("Failed To Raise Requistion Request ");
+            System.out.println("Failed To Raise Requisition Request");
         }
     }
 
     // 2.2 - View Suggestion Made By Executives - DONE
     private static void viewExecutivesSuggestions(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
 
-        System.out.println("View Executive Suggestions");
+        System.out.println("***** View Executive Suggestions *****");
         System.out.println(
                 "Enter 1. To View All OPEN suggestions\n" +
                         "Enter 2. To View All ACCEPTED suggestions\n" +
@@ -477,7 +459,7 @@ public class UI {
                         "Enter -1 To Go Back"
         );
 
-        int inputCase = input.nextInt();
+        int inputCase = getAValidNumberFromUser("Enter A Valid Choice");
         switch (inputCase) {
             case 1:
 
@@ -485,10 +467,9 @@ public class UI {
                 // =      			List Of All Open Suggestions     		      =
                 // ================================================================
 
-                System.out.println("ALL OPEN SUGGESTIONS");
+                System.out.println("<<-- ALL OPEN SUGGESTIONS -->>");
                 showSuggestion(resourceManagerService, managerID, IRSValues.ALL_OPEN_SUGGESTIONS);
                 break;
-
 
             case 2:
 
@@ -496,7 +477,7 @@ public class UI {
                 // =      		    List Of All Accepted Suggestions     		  =
                 // ================================================================
 
-                System.out.println("ALL ACCEPTED REQUESTS");
+                System.out.println("<<-- ALL ACCEPTED SUGGESTIONS -->>");
                 showSuggestion(resourceManagerService, managerID, IRSValues.ALL_ACCEPTED_SUGGESTIONS);
                 break;
 
@@ -506,7 +487,7 @@ public class UI {
                 // =      		    List Of All Rejected Suggestions     		  =
                 // ================================================================
 
-                System.out.println("ALL REJECTED SUGGESTIONS");
+                System.out.println("<<-- ALL REJECTED SUGGESTIONS -->>");
                 showSuggestion(resourceManagerService, managerID, IRSValues.ALL_REJECTED_SUGGESTIONS);
                 break;
 
@@ -521,7 +502,7 @@ public class UI {
                 break;
 
             case -1:
-                // Going Back To LoginAsRMG
+                // Going Back To Login As Manager
                 return;
 
             default:
@@ -534,16 +515,16 @@ public class UI {
     }
 
     // 2.3 - Accept / Reject Suggestions Made By Executives - DONE
-    private static void acceptRejectRequests(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
+    private static void acceptRejectSuggestions(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
 
         System.out.println("Accept / Reject Suggestions, You have the following suggestions");
         viewExecutivesSuggestions(resourceManagerService, managerID);
 
         System.out.println("Enter The Requisition Suggestion ID You Want To Accept / Reject ");
-        int requisitionSuggestionID = input.nextInt();
+        int requisitionSuggestionID = getAValidNumberFromUser("Enter Correct Requisition Suggestion ID");
 
         System.out.println("Please Enter 400 to Accept\n402 to Reject The Suggestion");
-        int choice = input.nextInt();
+        int choice = getAValidNumberFromUser("Enter Correct Choice");
 
         // Calling The Service Layer, Passing The Option, Getting  A Boolean in return if executed successfully
         if (resourceManagerService.acceptRejectSuggestions(managerID, requisitionSuggestionID, choice)) {
@@ -558,18 +539,14 @@ public class UI {
     // 2.4 - Update Project Allocation For Employee - DONE - WORKING
     private static void updateProjectAllocationForEmployee(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
 
-        System.out.println("Updating Project Allocation For Employee");
-        System.out.println("Enter -1 To Go Back");
+        System.out.println("*****   Updating Project Allocation For Employee    *****");
         System.out.println("Enter EmployeeID");
-        int empID = input.nextInt();
-
-        if (empID == -1) {
-            return;
-        }
+        int empID = getAValidNumberFromUser("Enter A Valid Employee ID");
 
         System.out.println("Enter Project ID");
         System.out.println("Enter 0 For No Project");
-        int projectID = input.nextInt();
+        int projectID = getAValidNumberFromUser("Enter A Valid Project ID");
+
         if (resourceManagerService.updateProjectForEmployee(managerID, empID, projectID)) {
             System.out.println("Details Updated Successfully");
         } else {
@@ -577,38 +554,28 @@ public class UI {
         }
     }
 
-    // 2.5 - Update Project Details - DONE
-    private static void updateProjectDetails(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
-
-        System.out.println("Updating Project Details");
-
-        System.out.println("Enter Project ID");
-
-        if (resourceManagerService.updateProjectDetails(managerID, input.nextInt())) {
-            System.out.println("Details Updated Successfully");
-        }
-    }
-
     // 2.6 - Generate Reports For Resource Manager - DONE - PARTIALLY WORKING
-    private static void generateReportsForResourceManager(ResouceManagerServiceImplementation resourceManagerService, int managerID) {
+    private static void generateReportsForResourceManager(ResouceManagerServiceImplementation resourceManagerService, User loggedInManager) {
 
-        System.out.println("Generating Reports For Requests");
+        System.out.println("***********************************************************");
+        System.out.println("    Request Raised By " + loggedInManager.getName());
+        System.out.println("***********************************************************");
 
         // ================================================================
         // =      			List Of All Open Requests     				  =
         // ================================================================
 
         printSpaces();
-        System.out.println("ALL OPEN REQUESTS");
-        showRequests(resourceManagerService, managerID, IRSValues.REQUISITION_REQUEST_OPEN);
+        System.out.println("*******   ALL OPEN REQUESTS   *******");
+        showRequests(resourceManagerService, loggedInManager.getUserID(), IRSValues.REQUISITION_REQUEST_OPEN);
 
         // ================================================================
         // =      			List Of All Closed Requests     		      =
         // ================================================================
 
         printSpaces();
-        System.out.println("ALL CLOSED REQUESTS");
-        showRequests(resourceManagerService, managerID, IRSValues.REQUISITION_REQUEST_CLOSED);
+        System.out.println("*******     ALL CLOSED REQUESTS   *******");
+        showRequests(resourceManagerService, loggedInManager.getUserID(), IRSValues.REQUISITION_REQUEST_CLOSED);
 
     }
 
@@ -622,20 +589,28 @@ public class UI {
 
         ArrayList<RequisitionSuggestions> requisitionSuggestions = resourceManagerService.viewSuggestionsMadeByExecutive(managerID, suggestionsCode);
 
+        // Checking If No Data is Fetched
+        if (requisitionSuggestions.size() == 0) {
+            System.out.println("No Suggestions Found In Database");
+            return;
+        }
+
         Iterator<RequisitionSuggestions> iterator = requisitionSuggestions.iterator();
-        System.out.println("{");
+        System.out.println("        {");
         while (iterator.hasNext()) {
             RequisitionSuggestions suggestion = iterator.next();
             System.out.println("\n" +
-                    "Request ID : " + suggestion.getRequisitionSuggestionID() + "\n" +
-                    "Name : " + suggestion.getEmployeeName() + "\n" +
-                    "For Project ID : " + suggestion.getSuggestedProjectID() + "\n" +
-                    "Skills : " + suggestion.getEmployeeSkills() + "\n" +
-                    "Domain : " + suggestion.getEmployeeDomain() + "\n" +
-                    "Name : " + suggestion.getYearsOfExperience() + "\n"
+                    "           Suggestion ID : " + suggestion.getRequisitionSuggestionID() + ",\n" +
+                    "           For Project ID : " + suggestion.getSuggestedProjectID() + ",\n" +
+                    "           Suggested Employee ID : " + suggestion.getSuggestedEmployeeID() + "\n"
             );
+            String[] listOfEmployee = suggestion.getSuggestedEmployeeID().split(" ");
+            ExecutiveServiceImplementation executiveServiceImplementation = new ExecutiveServiceImplementation();
+            for (int i = 0; i < listOfEmployee.length; i++) {
+                printEmployeeObject(executiveServiceImplementation.searchEmployeeByID(Integer.valueOf(listOfEmployee[i])));
+            }
         }
-        System.out.println("}");
+        System.out.println("        }");
     }
 
     // 2.6.3 Support Method For Manager Functionality
@@ -659,17 +634,17 @@ public class UI {
 
     // 2.6.4 Support Method For Manager Functionality
     private static void printRequestObject(RequisitionRequest request) {
+        System.out.println("[ Request " + request.getRequsitionID() + " ]");
 
-        System.out.println("{ \n" +
-                "	Request ID : " + request.getRequsitionID() + "\n" +
-                "	Domain Name : " + request.getDomainName() + "\n" +
-                "	Project ID : " + request.getProjectID() + "\n" +
-                "	Vacancy Of People : " + request.getVacancy() + "\n" +
-                "	Required People : " + request.getNumberOfPeopleRequired() + "\n" +
-                "	Skills Required : " + request.getSkillsAsString() + "\n" +
-                "	Request Status : " + request.getRequestStatus() + "\n" +
-                "	Request Open Date : " + request.getDateCreated() + "\n" +
-                "	Request Close Date : " + request.getDateClosed() + "\n}"
+        System.out.println("   { \n" +
+                "   Domain Name : " + request.getDomainName() + ",\n" +
+                "	Project ID : " + request.getProjectID() + ",\n" +
+                "	Vacancy Of People : " + request.getVacancy() + ",\n" +
+                "	Required People : " + request.getNumberOfPeopleRequired() + ",\n" +
+                "	Skills Required : " + request.getSkillsAsString() + ",\n" +
+                "	Request Status : " + request.getRequestStatus() + ",\n" +
+                "	Request Open Date : " + request.getDateCreated() + ",\n" +
+                "	Request Close Date : " + request.getDateClosed() + "\n   }"
         );
     }
 
@@ -681,8 +656,9 @@ public class UI {
 
     private static void loginAsExecutive(User loggedInUser) {
 
-        greetUser(loggedInUser);
+        printSymbols();
 
+        greetUser(loggedInUser);
         int executiveID = loggedInUser.getUserID();
 
         System.out.println("Please Press 1 To Search Employee");
@@ -692,33 +668,40 @@ public class UI {
         System.out.println("Please Press 5 To Suggest For Requests");
         System.out.println("Please Press -1 To Logout");
 
+        printSpaces();
+
         ExecutiveServiceImplementation executiveService = new ExecutiveServiceImplementation();
 
         input = new Scanner(System.in);
-        int rmgInput = input.nextInt();
+        String rmgInput = input.next();
 
         switch (rmgInput) {
-            case 1:
+            case "1":
                 //  TODO : Search Employee On Domain / Skill / Experience / ID.
                 searchEmployee(executiveService);
                 break;
-            case 2:
+
+            case "2":
                 //  TODO : Assign RMG Project To Employee.
                 assignProjectToRM(executiveService, executiveID);
                 break;
-            case 3:
+
+            case "3":
                 //  TODO : View All Requisition Requests.
                 viewAllRequisitionRequests(executiveService, executiveID);
                 break;
-            case 4:
+
+            case "4":
                 //  TODO : Generate Reports For Closed / Pending Requests from all Resource Managers for specific Date / Time / Closed / Pending.
                 generateReports(executiveService, executiveID);
                 break;
-            case 5:
+
+            case "5":
                 //  TODO : Generate Suggestions.
                 giveSuggestionForRequest(executiveService, executiveID);
                 break;
-            case -1:
+
+            case "-1":
                 startTheProgram();
                 break;
 
@@ -760,7 +743,7 @@ public class UI {
                 break;
 
             case "4":
-               searchEmployeeBySkills(executiveService);
+                searchEmployeeBySkills(executiveService);
                 break;
 
             case "-1":
@@ -797,6 +780,7 @@ public class UI {
 
     //  3.1.1 - Search Employee By Domain
     private static void searchEmployeeByDomain(ExecutiveServiceImplementation executiveService) {
+
         System.out.println("Enter The Domain Of Employee");
         System.out.println("Enter -1 To Go Back");
 
@@ -805,7 +789,7 @@ public class UI {
             return;
         }
         while (!domainName.matches("[a-zA-Z]+$")) {
-            System.out.println("Please Enter A Valid Name");
+            System.out.println("Please Enter A Valid Domain Name");
             domainName = inputString.nextLine();
         }
 
@@ -822,44 +806,45 @@ public class UI {
 
     //  3.1.2 - Search Employee By ID
     private static void searchEmployeeByID(ExecutiveServiceImplementation executiveService) {
+
         System.out.println("Enter Employee ID To Be Searched");
         System.out.println("Enter -1 To Go Back");
-        String inputID = input.next();
 
-        while (!inputID.matches("[0-9]+")) {
-            System.out.println("Please Give A Valid Employee ID");
-            inputID = input.next().trim();
-            if (inputID.equals("-1")) {
-                return;
-            }
-        }
-
-        // Loop Will Break If User Enters a Number ID
         Employee e = null;
-        int ID = Integer.valueOf(inputID);
+        int ID = getAValidNumberFromUser("Enter A Valid Employee ID");
         if (ID > 0) {
             e = executiveService.searchEmployeeByID(ID);
+            System.out.println("YO" + e.getEmployeeDomain());
         }
+        System.out.println("I am here with " + e.getEmployeeName());
 
         if (e != null) {
             printEmployeeObject(e);
         } else {
-            System.out.println("Employee With ID " + ID + " not found in the database.");
+            System.out.println("Employee not found in the database.");
         }
     }
 
     //  3.2 - Assign Project To Employee
     private static void assignProjectToRM(ExecutiveServiceImplementation executiveService, int executiveID) {
 
-        System.out.println("Enter The Project ID");
-        int projectID = input.nextInt();
+        System.out.println("Assign Project To Employee");
 
+        // Executive Can Allocate Employees For Projects
+        // Of only which they are in charge of
+
+        System.out.println("Enter The Project ID");
+        int projectID = getAValidNumberFromUser("Enter Valid Project ID");
         System.out.println("Enter The Employee ID");
-        int employeeID = input.nextInt();
+        int employeeID = getAValidNumberFromUser("Enter Valid Employee ID");
 
         //TODO : Allocate the project
-
-        executiveService.assignProjectToEmployee(projectID, employeeID);
+        boolean status = executiveService.assignProjectToEmployee(projectID, employeeID, executiveID);
+        if (status) {
+            System.out.println("Records Updated Successfully");
+        } else {
+            System.out.println("Records Not Updated Successfully");
+        }
     }
 
     //  3.2 - View All Requests
@@ -868,13 +853,60 @@ public class UI {
     }
 
     //  3.3 - Give Suggestion On Basis Of Requests
-
     private static void giveSuggestionForRequest(ExecutiveServiceImplementation executiveService, int executiveID) {
+        System.out.println("Display Open Requests");
+        System.out.println("Enter -1 To Go Back");
+
         // SHOW OPEN REQUESTS
+        getRequest(executiveService, executiveID, IRSValues.REQUISITION_REQUEST_OPEN);
 
-        // SEARCH EMPLOYEES
+        System.out.println("Enter The Request ID For which you want to suggest");
+
+        int requisitionRequestID = getAValidNumberFromUser("Enter A Correct Requisition Request");
+
+        System.out.println("Enter 1. If You want to search employees");
+        String choice = inputString.next();
+        if (choice.equals("1")) {
+
+            // SEARCH EMPLOYEES
+
+            searchEmployee(executiveService);
+        }
+
+        System.out.println("Enter the Employee For 2 Employees ");
+
+        int emp1ID = getAValidNumberFromUser("Enter Correct ID For Employee 1");
+        int emp2ID = getAValidNumberFromUser("Enter Correct ID For Employee 2");
+
+        String combinedEmployees = emp1ID + " " + emp2ID;
+
+        boolean done = executiveService.giveSuggestion(executiveID, requisitionRequestID, combinedEmployees);
+
+        if (done) {
+            System.out.println("Suggestion Raised");
+        } else {
+            System.out.println("Suggestion Not Raised");
+        }
+    }
+
+    private static int getAValidNumberFromUser(String message) {
+        String inputNumberAsString = input.next();
+
+        while (!inputNumberAsString.matches("[0-9]+")) {
+            System.out.println(message);
+            inputNumberAsString = input.next().trim();
+        }
+        return Integer.valueOf(inputNumberAsString);
+    }
 
 
+    private static String getAValidStringFromUser(String message) {
+        String userInput = input.nextLine();
+        while (!userInput.matches("[a-zA-Z]+$")) {
+            System.out.println(message);
+            userInput = inputString.nextLine();
+        }
+        return userInput;
     }
 
     //  3.4 - Generate Reports
@@ -918,6 +950,7 @@ public class UI {
     }
 
     private static Date getDateFromUserAndParseIt() {
+
         System.out.println("Enter Date In Format DD-MM-YYYY");
         String inputStringDate = inputString.next();
 
@@ -961,34 +994,51 @@ public class UI {
     }
 
     private static void printEmployeeObject(Employee e) {
-        if (e.getEmployeeStatus() == IRSValues.UNALLOCATED_IN_ANY_PROJECT) {
-            System.out.println("Unallocated");
-        } else {
-            System.out.println("Allocated");
+
+        /*
+         * Checking For No Data
+         */
+
+        if (e == null) {
+            System.out.println("No Data Found For The Employee");
+            return;
         }
 
-        System.out.println(e.getEmployeeStatus() == IRSValues.UNALLOCATED_IN_ANY_PROJECT ? "Unallocated" : "Allocated");
-
+        /*
+         * Else, Print Data
+         */
+        System.out.println("    Employee Details:");
+        System.out.println("    {");
         System.out.println(
-                "   ID : " + e.getEmployeeID() + "\n" +
-                        "   Name : " + e.getEmployeeName() + "\n" +
-                        "   Project ID : " + e.getEmployeeProjectID() + "\n" +
-                        "   Domain : " + e.getEmployeeDomain() + "\n" +
-                        "   Skills : " + e.getEmployeeSkills() + "\n" +
-                        "   Experience : " + e.getYearsOfExperience() + "\n" +
-                        "   Allocation Status : " + (e.getEmployeeStatus() == IRSValues.ALLOCATED_IN_PROJECT ? "Allocated" : "Unallocated") +
-                        "\n"
+                "       ID : " + e.getEmployeeID() + ",\n" +
+                        "       Name : " + e.getEmployeeName() + ",\n" +
+                        "       Project ID : " + e.getEmployeeProjectID() + ",\n" +
+                        "       Domain : " + e.getEmployeeDomain() + ",\n" +
+                        "       Skills : " + e.getEmployeeSkills() + ",\n" +
+                        "       Experience : " + e.getYearsOfExperience() + ",\n" +
+                        "       Allocation Status : " + (e.getEmployeeStatus() == IRSValues.ALLOCATED_IN_PROJECT ? "Allocated" : "Unallocated") + "\n"
         );
+        System.out.println("    }");
     }
 
-    // =================================
-    // =                               =
-    // =         Other Methods         =
-    // =                               =
-    // =================================
+    // =========================================
+    // =                                       =
+    // =         Other Support Methods         =
+    // =                                       =
+    // =========================================
+
+    //	Greet Symbols
+    private static void printSymbols() {
+        System.out.println("\n\n\n\n=====================================================");
+    }
+
+    // Print Spaces
+    private static void printSpaces() {
+        System.out.println();
+    }
 
     //	Greet User
     private static void greetUser(User loggedInUser) {
-        System.out.println("Welcome " + loggedInUser.getName());
+        System.out.println("Welcome " + loggedInUser.getName() + ", ");
     }
 }

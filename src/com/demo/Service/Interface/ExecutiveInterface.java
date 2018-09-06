@@ -27,10 +27,14 @@ public interface ExecutiveInterface {
 
     //  TODO : Assign RMG Project To Employee.
 
-    boolean assignProjectToEmployee(int empID, int projectID);
+    boolean assignProjectToEmployee(int empID, int projectID, int executiveID);
 
     //  TODO : View All Requisition Requests.
 
     ArrayList<RequisitionRequest> viewAllRequisitionRequests(int rmgExecutiveID, int requestCode, Date date);
+
+    //  TODO : Give Suggestions
+
+    boolean giveSuggestion(int executiveID, int requestID, String combineEmployeeID);
 
 }

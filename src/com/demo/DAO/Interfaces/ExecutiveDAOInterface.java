@@ -26,9 +26,13 @@ public interface ExecutiveDAOInterface {
 
     //  TODO : Assign RMG Project To Employee.
 
-    boolean assignProjectToEmployeeFromDatabase(int empID, int projectID);
+    boolean assignProjectToEmployeeFromDatabase(int empID, int projectID, int executiveID);
 
     //  TODO : View All Requisition Requests.
 
     ArrayList<RequisitionRequest> viewAllOpenRequisitionRequestsFromDatabase(int executiveID, int requestCode, java.sql.Date date);
+
+    // TODO : Give Suggestions
+
+    boolean giveSuggestion(int executiveID, int requestID, String combineEmployeeID);
 }

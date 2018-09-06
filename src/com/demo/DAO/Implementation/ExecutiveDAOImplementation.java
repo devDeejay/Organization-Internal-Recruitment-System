@@ -3,6 +3,7 @@ package com.demo.DAO.Implementation;
 import com.demo.DAO.Interfaces.ExecutiveDAOInterface;
 import com.demo.Model.Employee;
 import com.demo.Model.RequisitionRequest;
+import com.demo.Model.RequisitionSuggestions;
 import com.demo.Util.DBUtil;
 import com.demo.Util.IClientQueryMapper;
 import com.demo.Util.IRSValues;
@@ -34,10 +35,9 @@ public class ExecutiveDAOImplementation implements ExecutiveDAOInterface {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-
                 // Building The Employee Object
+                System.out.println("Got Details For Employee");
                 employee = getEmployeeObjectFromResultSet(resultSet);
-
             }
 
         } catch (Exception e) {
@@ -165,13 +165,24 @@ public class ExecutiveDAOImplementation implements ExecutiveDAOInterface {
     }
 
     @Override
-    public boolean assignProjectToEmployeeFromDatabase(int empID, int projectID) {
+    public boolean assignProjectToEmployeeFromDatabase(int empID, int projectID, int executiveID) {
         DBUtil dbUtilInstance = DBUtil.getInstance();
-        try (
-                // Try With Resources
-                Connection connection = dbUtilInstance.getConnection();
-                PreparedStatement statement = connection.prepareStatement(IClientQueryMapper.UPDATE_EMPLOYEE_ALLOCATION);
-        ) {
+        try{
+            Connection connection = dbUtilInstance.getConnection();
+            PreparedStatement statement = connection.prepareStatement(IClientQueryMapper.GET_EXECUTIVE_ID_FOR_PROJECT);
+
+            statement.setInt(1, projectID);
+
+            ResultSet resultSet = statement.executeQuery();
+            int executiveIDInProjectTable = resultSet.getInt(1);
+
+            if (executiveID != executiveIDInProjectTable) {
+                System.out.println("You are not an executive for this Project");
+                return false;
+            }
+
+            //Second Part Of Query
+            statement = connection.prepareStatement(IClientQueryMapper.UPDATE_EMPLOYEE_ALLOCATION);
 
             statement.setInt(1, projectID);
             statement.setInt(2, IRSValues.ALLOCATED_IN_PROJECT);
@@ -229,6 +240,106 @@ public class ExecutiveDAOImplementation implements ExecutiveDAOInterface {
         }
 
         return listOfRequests;
+    }
+
+    @Override
+    public boolean giveSuggestion(int executiveID, int requestID, String combineEmployeeID) {
+        RequisitionRequest request = null;
+        RequisitionSuggestions suggestion = null;
+
+        // Get The Request Object From Database
+        try {
+            DBUtil dbUtilInstance = DBUtil.getInstance();
+            Connection connection = dbUtilInstance.getConnection();
+
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(IClientQueryMapper.VIEW_ALL_REQUESTS_FOR_EXECUTIVE);
+
+            preparedStatement.setInt(1, executiveID);
+            preparedStatement.setInt(2, IRSValues.REQUISITION_REQUEST_OPEN);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+
+                // Get its Properties
+
+                RequisitionRequest.Builder builder = new RequisitionRequest.Builder();
+
+                builder.resourceManagerID(resultSet.getInt("requesting_manager_id"))
+                        .requsitionID(resultSet.getInt("requisition_request_id"))
+                        .projectID(resultSet.getInt("requesting_project_id"))
+                        .requestStatus(resultSet.getInt("request_status"));
+
+                 request = builder.build();
+
+            } else {
+                // No Request Was Found
+                System.out.println("No Open Requisition Request Found For This Requisition ID");
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out
+                    .println("Error Occurred While Getting Requisition ID You Entered");
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+
+        if (request != null) {
+            System.out.println("Request Object Built");
+            // Making Suggestion Object
+
+            RequisitionSuggestions.Builder builder = new RequisitionSuggestions.Builder();
+            builder
+                    .requisitionRequestID(request.getRequsitionID())
+                    .suggestedEmployeeID(combineEmployeeID)
+                    .suggestedProjectID(request.getProjectID())
+                    .suggestionStatus(IRSValues.ALL_OPEN_SUGGESTIONS)
+                    .executiveID(executiveID)
+                    .managerID(request.getResourceManagerID());
+
+            // Build Suggestion Object
+            suggestion = builder.build();
+        }
+
+        // Insert It
+        System.out.println("Inserting Suggestions");
+
+        if (suggestion != null) {
+            try {
+
+                DBUtil dbUtilInstance = DBUtil.getInstance();
+                Connection connection = dbUtilInstance.getConnection();
+
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(IClientQueryMapper.INSERT_NEW_SUGGESTIONS);
+
+                preparedStatement.setInt(1, suggestion.getRequisitionRequestID());
+                preparedStatement.setInt(2, suggestion.getSuggestedProjectID());
+                preparedStatement.setInt(3, suggestion.getExecutiveID());
+                preparedStatement.setInt(4, suggestion.getManagerID());
+                preparedStatement.setString(5, suggestion.getSuggestedEmployeeID());
+                preparedStatement.setInt(6, suggestion.getSuggestionStatus());
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected == 1) {
+                    System.out.println("Suggestion Raised Successfully");
+                    return true;
+                } else {
+                    System.out.println("No rows were updated");
+                }
+
+            } catch (Exception e) {
+                System.out
+                        .println("Error While Getting Executive ID While raising request");
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }
+        return false;
     }
 
     private RequisitionRequest getRequestObjectFromResultSet(ResultSet resultSet) throws SQLException {
